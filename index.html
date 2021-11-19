@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="keywords" content="m3u8 downloader for web">
+  <meta name="description" content="m3u8 downloader for web, Momo's Blog, LuckyMomo">
+  <title>m3u8 downloader</title>
+  <style>
+  /*全局设置*/
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body::-webkit-scrollbar { display: none}
+  p {
+    margin: 0;
+  }
+  [v-cloak] {
+    display: none;
+  }
+  #m-app {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    padding: 10px 50px 80px;
+    box-sizing: border-box;
+  }
+  .m-p-action {
+    margin: 20px auto;
+    max-width: 1100px;
+    width: 100%;
+    font-size: 35px;
+    text-align: center;
+    font-weight: bold;
+  }
+  .m-p-other, .m-p-tamper, .m-p-github, .m-p-language {
+    position: fixed;
+    right: 50px;
+    background-color: #eff3f6;
+    background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
+    color: #24292e;
+    border: 1px solid rgba(27, 31, 35, .2);
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 6px 12px;
+    z-index: 99;
+  }
+  .m-p-help {
+    position: fixed;
+    right: 50px;
+    top: 50px;
+    width: 30px;
+    height: 30px;
+    color: #666666;
+    z-index: 2;
+    line-height: 30px;
+    font-weight: bolder;
+    border-radius: 50%;
+    border: 1px solid rgba(27, 31, 35, .2);
+    cursor: pointer;
+    background-color: #eff3f6;
+    background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
+  }
+  .m-p-github:hover, .m-p-other:hover, .m-p-tamper:hover, .m-p-help:hover, .m-p-language:hover {
+    opacity: 0.9;
+  }
+  .m-p-language {
+    bottom: 70px;
+  }
+  .m-p-other {
+    bottom: 110px;
+  }
+  .m-p-tamper {
+    bottom: 30px;
+  }
+  .m-p-github {
+    bottom: 150px;
+  }
+  /*添加时间轴*/
+  .m-p-input-container {
+    display: flex;
+    margin-bottom: 30px;
+  }
+  .m-p-input-container input {
+    flex: 1;
+    margin: 0 5px;
+    padding: 16px;
+    width: 280px;
+    border: 1px solid #cccccc;
+    color: #444444;
+    font-size: 24px;
+    border-radius: 4px;
+    box-shadow: none;
+  }
+  .m-p-input-container div {
+    position: relative;
+    display: inline-block;
+    margin: 0 5px;
+    height: 60px;
+    width: 200px;
+    border-radius: 4px;
+    border: 1px solid #eeeeee;
+    color: white;
+    font-size: 24px;
+    line-height: 60px;
+    cursor: pointer;
+    background-color: #3D8AC7;
+    opacity: 1;
+    transition: 0.3s all;
+  }
+  .m-p-input-container div:hover {
+    opacity: 0.9;
+  }
+  .m-p-input-container .disable {
+    cursor: not-allowed;
+    background-color: #dddddd;
+  }
+  /*时间轴项目*/
+
+  </style>
+</head>
+
+<body>
+<div id="loading">页面加载中，请耐心等待...</div>
+<section id="m-app" v-cloak>
+  <!--顶部操作提示-->
+  <section class="m-p-action g-box">{{tips}}</section>
+  <a class="m-p-help" target="_blank" href="https://segmentfault.com/a/1190000021847172">?</a>
+  <a class="m-p-github" target="_blank" href="https://github.com/Momo707577045/m3u8-downloader">github</a>
+  <a class="m-p-other" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
+
+  <!--文件载入-->
+  <section class="m-p-input-container">
+    <input type="text" v-model="newTimeLineTitle" placeholder="请输入时间轴名称">
+    <input type="text" v-model="newTimeLineStartTime" placeholder="请输入开始时间">
+    <div @click="createTimeLineObj()">创建时间轴</div>
+  </section>
+
+  <section v-for="(timeLineObj, timeLineObjIndex) in timeLineObjList">
+    <div class="title">{{timeLineObj.timeLineTitle}}{{timeLineObj.timeLineStartTime}}</div>
+    <div class="action">
+      <input type="text" v-model="newItemTitle" placeholder="请输入任务内容">
+      <input type="number" v-model="newItemDays" placeholder="请输入任务耗时">
+      <div @click="createItem(timeLineObjIndex, newItemTitle, newItemDays)">添加项目</div>
+    </div>
+    <section v-for="(itemObj, itemObjIndex) in timeLineObj.itemList">
+      <input type="text" v-model="itemObj.itemTitle" placeholder="请输入任务内容">
+      <input type="number" v-model="itemObj.itemDays" placeholder="请输入任务耗时">
+      <div>{{itemObj.itemStartTime}}</div>
+      <div>{{itemObj.itemEndTime}}</div>
+      <div @click="deleteItem(timeLineObjIndex, itemObjIndex)"></div>
+    </section>
+
+  </section>
+
+  </template>
+</section>
+</body>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?1f12b0865d866ae1b93514870d93ce89";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!--vue 前端框架-->
+<script src="https://blog.luckly-mjw.cn/tool-show/m3u8-downloader/vue.js"></script>
+
+<script>
+new Vue({
+  el: '#m-app',
+
+  data() {
+    return {
+      tips: '跳过节假日的排期工具', // 顶部提示
+      newTimeLineTitle: '', // 新建时间轴名称
+      newTimeLineStartTime: '', // 新建时间轴开始时间
+      newItemTitle: '', // 新建项目的内容
+      newItemDays: '', // 新建项目的耗时
+      timeLineObjList: [],
+    }
+  },
+
+  created() {
+    document.getElementById('loading') && document.getElementById('loading').remove()
+  },
+
+  methods: {
+    // ajax 请求
+    ajax(options) {
+      options = options || {};
+      let xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          let status = xhr.status;
+          if (status >= 200 && status < 300) {
+            options.success && options.success(xhr.response);
+          } else {
+            options.fail && options.fail(status);
+          }
+        }
+      };
+
+      xhr.open("GET", options.url, true);
+      xhr.send(null);
+    },
+
+    // 格式化时间
+    formatTime(date, formatStr) {
+      const formatType = {
+        Y: date.getFullYear(),
+        M: date.getMonth() + 1,
+        D: date.getDate(),
+        h: date.getHours(),
+        m: date.getMinutes(),
+        s: date.getSeconds(),
+      }
+      return formatStr.replace(
+        /Y+|M+|D+|h+|m+|s+/g,
+        target => (new Array(target.length).join('0') + formatType[target[0]]).substr(-target.length)
+      )
+    },
+
+    // 拷贝剪切板
+    copyToClipboard(content) {
+      clearTimeout(this.timeouter)
+
+      if (!document.queryCommandSupported('copy')) {
+        return false
+      }
+
+      let $input = document.createElement('textarea')
+      $input.style.opacity = '0'
+      $input.value = content
+      document.body.appendChild($input)
+      $input.select()
+
+      const result = document.execCommand('copy')
+      document.body.removeChild($input)
+      $input = null
+
+      return result
+    },
+
+    // 创建时间轴
+    createTimeLineObj() {
+      this.timeLineObjList.push({
+        timeLineTitle: '',
+        timeLineStartTime: '', //
+        itemList: [], // 项目内容
+      })
+    },
+
+    // 删除时间轴项目信息
+    deleteTimeLineObj(timeLineObjIndex, itemIndex) {
+    },
+
+    // 向时间轴添加项目
+    createItem(timeLineObjIndex, newItemTitle, newItemDays) {
+      this.timeLineObjList[timeLineObjIndex].itemList.push({
+        itemTitle: newItemTitle, // 项目内容
+        itemDays: newItemDays, // 项目耗时
+        itemStartTime: '', // 项目开始时间
+        itemEndTime: '', // 项目结束时间
+      })
+    },
+
+    // 更新时间轴项目信息
+    updateItem(timeLineObjIndex, itemIndex, itemTitle, itemDays) {
+    },
+
+    // 删除时间轴项目信息
+    deleteItem(timeLineObjIndex, itemIndex) {
+    },
+
+    // 复制时间轴内容
+    copyTimeLineContent() {
+
+    }
+
+  }
+})
+</script>
+
+</html>
