@@ -165,7 +165,7 @@
     <div class="tool-box">
       <i class="withoutZero" :class="{active:withoutZero}" @click="withoutZero=!withoutZero">去除日期补零</i>
       <i class="withoutYear" :class="{active:withoutYear}" @click="withoutYear=!withoutYear">去除年</i>
-      <i class="copy" @click="copy">复制</i>
+      <i class="copy" @click="copy(resultStr)">复制</i>
     </div>
   </section>
 </section>
@@ -271,8 +271,8 @@ new Vue({
   - #用时（为了不被识别添加的文字）：4
 
 
-     `, // 结果字符串
-      resultStr: '',
+     `,
+      resultStr: '', // 结果字符串
     }
   },
 
@@ -429,7 +429,7 @@ new Vue({
     copy() {
       clearTimeout(this.timeouter)
       this.tips = `复制成功`
-      this.timeouter = setTimeout(() => {this.tips = `带备注的 JSON 重排版工具，左源码，右结果`}, 1000)
+      this.timeouter = setTimeout(() => {this.tips = `跳过节假日的排期工具，左计划，右结果`}, 1000)
       if (!document.queryCommandSupported('copy')) {
         return false
       }
