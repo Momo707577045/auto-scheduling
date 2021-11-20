@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dd9d763f-1130-44d6-9ca9-a0a607d117ab" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vue.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -19,37 +17,41 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
-              <caret line="125" selection-start-line="125" selection-end-line="125" />
+            <state relative-caret-position="152">
+              <caret line="7" column="48" selection-start-line="7" selection-start-column="48" selection-end-line="7" selection-end-column="48" />
               <folding>
-                <element signature="e#463#499#0" />
-                <element signature="e#547#567#0" />
-                <element signature="e#580#604#0" />
-                <element signature="e#614#735#0" />
-                <element signature="e#750#886#0" />
-                <element signature="e#941#1327#0" />
-                <element signature="e#1340#1707#0" />
-                <element signature="e#1803#1826#0" />
-                <element signature="e#1843#1866#0" />
-                <element signature="e#1880#1904#0" />
-                <element signature="e#1919#1942#0" />
-                <element signature="e#1957#1981#0" />
-                <element signature="e#4875#5428#0" />
-                <element signature="e#6111#6503#0" />
+                <element signature="e#548#568#0" />
+                <element signature="e#581#605#0" />
+                <element signature="e#613#668#0" />
+                <element signature="e#681#844#0" />
+                <element signature="e#867#1270#0" />
+                <element signature="e#1281#1648#0" />
+                <element signature="e#1692#1715#0" />
+                <element signature="e#1727#1750#0" />
+                <element signature="e#1760#1811#0" />
+                <element signature="e#1823#1869#0" />
+                <element signature="e#1904#1974#0" />
+                <element signature="e#2002#2261#0" />
+                <element signature="e#2310#2670#0" />
+                <element signature="e#2687#2741#0" />
+                <element signature="e#2756#2812#0" />
+                <element signature="e#6455#6847#0" />
+                <element signature="e#6897#7222#0" />
+                <element signature="e#8274#8288#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="todo.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="todo.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/todo.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="171">
-                <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+              <first_editor relative-caret-position="133">
+                <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
               </first_editor>
               <second_editor>
                 <markdownNavigatorState />
@@ -65,9 +67,15 @@
       <find>:disabled=&quot;downloading&quot;</find>
       <find>timeLineTitle</find>
       <find>loading</find>
+      <find>parseData</find>
+      <find>itemEndDate</find>
+      <find>endDate</find>
+      <find>withoutYear</find>
     </findStrings>
     <replaceStrings>
       <replace>createItem</replace>
+      <replace>nextDate</replace>
+      <replace>projectEndDate</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -76,8 +84,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/../../../../../intruction/temp1.js" />
         <option value="$PROJECT_DIR$/todo.md" />
+        <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
   </component>
@@ -90,11 +99,11 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="96" />
     <option name="y" value="23" />
-    <option name="width" value="1824" />
-    <option name="height" value="1057" />
+    <option name="width" value="1184" />
+    <option name="height" value="777" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -155,7 +164,7 @@
     </option>
   </component>
   <component name="ToolWindowManager">
-    <frame x="96" y="23" width="1824" height="1057" extended-state="0" />
+    <frame x="96" y="23" width="1184" height="777" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="PlantUML" />
@@ -163,9 +172,9 @@
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" weight="0.32977587" />
+      <window_info anchor="bottom" id="Terminal" weight="0.47031963" />
       <window_info anchor="right" id="Remote Host" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17171717" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17250438" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32977587" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -186,38 +195,56 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.es5.d.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="125" selection-start-line="125" selection-end-line="125" />
-          <folding>
-            <element signature="e#463#499#0" />
-            <element signature="e#547#567#0" />
-            <element signature="e#580#604#0" />
-            <element signature="e#614#735#0" />
-            <element signature="e#750#886#0" />
-            <element signature="e#941#1327#0" />
-            <element signature="e#1340#1707#0" />
-            <element signature="e#1803#1826#0" />
-            <element signature="e#1843#1866#0" />
-            <element signature="e#1880#1904#0" />
-            <element signature="e#1919#1942#0" />
-            <element signature="e#1957#1981#0" />
-            <element signature="e#4875#5428#0" />
-            <element signature="e#6111#6503#0" />
-          </folding>
+        <state relative-caret-position="203">
+          <caret line="669" column="4" selection-start-line="669" selection-start-column="4" selection-end-line="669" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../intruction/temp1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="202" column="13" selection-start-line="202" selection-start-column="13" selection-end-line="202" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/todo.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="171">
-            <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+          <first_editor relative-caret-position="133">
+            <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
           </first_editor>
           <second_editor>
             <markdownNavigatorState />
           </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="7" column="48" selection-start-line="7" selection-start-column="48" selection-end-line="7" selection-end-column="48" />
+          <folding>
+            <element signature="e#548#568#0" />
+            <element signature="e#581#605#0" />
+            <element signature="e#613#668#0" />
+            <element signature="e#681#844#0" />
+            <element signature="e#867#1270#0" />
+            <element signature="e#1281#1648#0" />
+            <element signature="e#1692#1715#0" />
+            <element signature="e#1727#1750#0" />
+            <element signature="e#1760#1811#0" />
+            <element signature="e#1823#1869#0" />
+            <element signature="e#1904#1974#0" />
+            <element signature="e#2002#2261#0" />
+            <element signature="e#2310#2670#0" />
+            <element signature="e#2687#2741#0" />
+            <element signature="e#2756#2812#0" />
+            <element signature="e#6455#6847#0" />
+            <element signature="e#6897#7222#0" />
+            <element signature="e#8274#8288#0" />
+          </folding>
         </state>
       </provider>
     </entry>

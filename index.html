@@ -1,19 +1,14 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="keywords" content="m3u8 downloader for web">
-  <meta name="description" content="m3u8 downloader for web, Momo's Blog, LuckyMomo">
-  <title>m3u8 downloader</title>
+  <meta name="keywords" content="跳过节假日的排期工具">
+  <meta name="description" content="跳过节假日的排期工具, Momo's Blog, LuckyMomo">
+  <title>JSON Remark Parse</title>
   <style>
   /*全局设置*/
-  html, body {
-    margin: 0;
-    padding: 0;
-  }
   body::-webkit-scrollbar { display: none}
   p {
     margin: 0;
@@ -21,24 +16,23 @@
   [v-cloak] {
     display: none;
   }
-  #m-app {
-    height: 100%;
-    width: 100%;
+  #app {
     text-align: center;
-    padding: 10px 50px 80px;
-    box-sizing: border-box;
+    padding: 10px 50px 0;
   }
-  .m-p-action {
+  .p-action {
     margin: 20px auto;
     max-width: 1100px;
     width: 100%;
     font-size: 35px;
     text-align: center;
     font-weight: bold;
+    white-space: pre-line;
   }
-  .m-p-other, .m-p-tamper, .m-p-github, .m-p-language {
+  .p-github, .p-other {
     position: fixed;
     right: 50px;
+    bottom: 70px;
     background-color: #eff3f6;
     background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
     color: #24292e;
@@ -50,9 +44,9 @@
     font-weight: 600;
     line-height: 20px;
     padding: 6px 12px;
-    z-index: 99;
+    z-index: 2;
   }
-  .m-p-help {
+  .p-help {
     position: fixed;
     right: 50px;
     top: 50px;
@@ -68,102 +62,114 @@
     background-color: #eff3f6;
     background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
   }
-  .m-p-github:hover, .m-p-other:hover, .m-p-tamper:hover, .m-p-help:hover, .m-p-language:hover {
+  .p-github:hover, .p-other:hover, .p-help {
     opacity: 0.9;
   }
-  .m-p-language {
-    bottom: 70px;
-  }
-  .m-p-other {
-    bottom: 110px;
-  }
-  .m-p-tamper {
+  .p-other {
     bottom: 30px;
   }
-  .m-p-github {
-    bottom: 150px;
+  .intro {
+    padding-left: 20px;
+    text-align: left;
   }
-  /*添加时间轴*/
-  .m-p-input-container {
-    display: flex;
-    margin-bottom: 30px;
+  .intro p {
+    font-size: 12px;
+    color: #666666;
   }
-  .m-p-input-container input {
-    flex: 1;
-    margin: 0 5px;
-    padding: 16px;
-    width: 280px;
-    border: 1px solid #cccccc;
-    color: #444444;
-    font-size: 24px;
-    border-radius: 4px;
-    box-shadow: none;
-  }
-  .m-p-input-container div {
+  /*字体文件载入*/
+  .p-input-container {
     position: relative;
-    display: inline-block;
-    margin: 0 5px;
-    height: 60px;
-    width: 200px;
+    display: flex;
+    padding-top: 6px;
+  }
+  .p-input-container .line {
+    position: relative;
+    vertical-align: top;
+    width: 5px;
+    top: 100px;
+    height: calc(100vh - 400px);
+    transform-origin: top;
+    background-repeat: repeat;
+    background-image: url(http://www.luckly-mjw.cn/baseSource/icon-dotted-y.png);
+  }
+  .p-input-container .textarea-box, .result-box {
+    margin: 0 20px;
+    padding: 10px;
+    height: calc(100vh - 200px);
+    flex: 1;
+    position: relative;
+    display: flex;
+    white-space: pre;
+    text-align: left;
+    color: #333333;
+    vertical-align: text-top;
+    font-size: 14px;
+    overflow: auto;
     border-radius: 4px;
-    border: 1px solid #eeeeee;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  }
+  .textarea-box {
+    border: 1px solid #cccccc;
+    resize: none;
+  }
+  .result-box {
+    display: block;
+    border: 1px solid #bbbbbb;
+  }
+  .tool-box {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    text-align: right;
+  }
+  i {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 14px;
     color: white;
-    font-size: 24px;
-    line-height: 60px;
     cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #aaaaaa;
     background-color: #3D8AC7;
-    opacity: 1;
+    opacity: 0.7;
     transition: 0.3s all;
   }
-  .m-p-input-container div:hover {
-    opacity: 0.9;
+  i:hover, .active {
+    opacity: 1;
   }
-  .m-p-input-container .disable {
-    cursor: not-allowed;
-    background-color: #dddddd;
+  .schemaJSON {
+    position: absolute;
+    top: 20px;
+    left: calc(50% - 140px);
+    right: unset;
   }
-  /*时间轴项目*/
-
   </style>
 </head>
-
 <body>
-<div id="loading">页面加载中，请耐心等待...</div>
-<section id="m-app" v-cloak>
+<section id="app" v-cloak="">
+
   <!--顶部操作提示-->
-  <section class="m-p-action g-box">{{tips}}</section>
-  <a class="m-p-help" target="_blank" href="https://segmentfault.com/a/1190000021847172">?</a>
-  <a class="m-p-github" target="_blank" href="https://github.com/Momo707577045/m3u8-downloader">github</a>
-  <a class="m-p-other" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
+  <section class="p-action g-box">{{ tips }}</section>
+  <a class="p-github" target="_blank" href="https://github.com/Momo707577045/auto-scheduling">github</a>
+  <a class="p-other" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
 
+  <!--工具功能-->
+  <div class="intro">
+    <p>* 自动剔除法定节假日的排期工具，解决人为排日期的问题</p>
+  </div>
   <!--文件载入-->
-  <section class="m-p-input-container">
-    <input type="text" v-model="newTimeLineTitle" placeholder="请输入时间轴名称">
-    <input type="text" v-model="newTimeLineStartTime" placeholder="请输入开始时间">
-    <div @click="createTimeLineObj()">创建时间轴</div>
-  </section>
-
-  <section v-for="(timeLineObj, timeLineObjIndex) in timeLineObjList">
-    <div class="title">{{timeLineObj.timeLineTitle}}{{timeLineObj.timeLineStartTime}}</div>
-    <div class="action">
-      <input type="text" v-model="newItemTitle" placeholder="请输入任务内容">
-      <input type="number" v-model="newItemDays" placeholder="请输入任务耗时">
-      <div @click="createItem(timeLineObjIndex, newItemTitle, newItemDays)">添加项目</div>
+  <section class="p-input-container">
+    <textarea v-model="sourceStr" class="textarea-box" :placeholder="testStr"></textarea>
+    <div class="line"></div>
+    <textarea class="result-box" v-model="resultStr" readonly></textarea>
+    <div class="tool-box">
+      <i class="withoutZero" :class="{active:withoutZero}" @click="withoutZero=!withoutZero">去除日期补零</i>
+      <i class="withoutYear" :class="{active:withoutYear}" @click="withoutYear=!withoutYear">去除年</i>
+      <i class="copy" @click="copy">复制</i>
     </div>
-    <section v-for="(itemObj, itemObjIndex) in timeLineObj.itemList">
-      <input type="text" v-model="itemObj.itemTitle" placeholder="请输入任务内容">
-      <input type="number" v-model="itemObj.itemDays" placeholder="请输入任务耗时">
-      <div>{{itemObj.itemStartTime}}</div>
-      <div>{{itemObj.itemEndTime}}</div>
-      <div @click="deleteItem(timeLineObjIndex, itemObjIndex)"></div>
-    </section>
-
   </section>
-
-  </template>
 </section>
 </body>
-
 <script>
 var _hmt = _hmt || [];
 (function() {
@@ -174,50 +180,124 @@ var _hmt = _hmt || [];
 })();
 </script>
 <!--vue 前端框架-->
-<script src="https://blog.luckly-mjw.cn/tool-show/m3u8-downloader/vue.js"></script>
-
+<script src="./vue.js"></script>
 <script>
+// 除周六日以外的法定假期
+let holidays = [
+  /********** 2021 节假日**********/
+  '2021-01-01', '2021-01-02', '2021-01-03',
+  '2021-02-11', '2021-02-12', '2021-02-13',
+  '2021-02-14', '2021-02-15', '2021-02-16',
+  '2021-02-17', '2021-04-03', '2021-04-04',
+  '2021-04-05', '2021-05-01', '2021-05-02',
+  '2021-05-03', '2021-05-04', '2021-05-05',
+  '2021-06-12', '2021-06-13', '2021-06-14',
+  '2021-09-19', '2021-09-20', '2021-09-21',
+  '2021-10-01', '2021-10-02', '2021-10-03',
+  '2021-10-04', '2021-10-05', '2021-10-06',
+  '2021-10-07',
+  /********** 2022 节假日**********/
+  '2022-01-01', '2022-01-02', '2022-01-03',
+  '2022-01-31', '2022-02-01', '2022-02-02',
+  '2022-02-03', '2022-02-04', '2022-02-05',
+  '2022-02-06', '2022-04-03', '2022-04-04',
+  '2022-04-05', '2022-04-30', '2022-05-01',
+  '2022-05-02', '2022-05-03', '2022-05-04',
+  '2022-06-03', '2022-06-04', '2022-06-05',
+  '2022-09-10', '2022-09-11', '2022-09-12',
+  '2022-10-01', '2022-10-02', '2022-10-03',
+  '2022-10-04', '2022-10-05', '2022-10-06',
+  '2022-10-07'
+
+]
+
+// 除工作日以外的调休工作日
+let workdays = [
+  /********** 2021 调休日**********/
+  '2021-02-07', '2021-02-20', '2021-04-25',
+  '2021-05-08', '2021-09-18', '2021-09-26',
+  '2021-10-09',
+  /********** 2022 调休日**********/
+  '2022-01-29', '2022-01-30', '2022-04-02',
+  '2022-04-24', '2022-05-07', '2022-10-08',
+  '2022-10-09'
+]
+
+// #自定义假期：2021.12.23,   2021.12.24 2021.12.28
+// #自定义上班时间：2021.12.25
+
 new Vue({
-  el: '#m-app',
+  el: '#app',
 
   data() {
     return {
-      tips: '跳过节假日的排期工具', // 顶部提示
-      newTimeLineTitle: '', // 新建时间轴名称
-      newTimeLineStartTime: '', // 新建时间轴开始时间
-      newItemTitle: '', // 新建项目的内容
-      newItemDays: '', // 新建项目的耗时
-      timeLineObjList: [],
+      tips: '跳过节假日的排期工具，左计划，右结果',
+      timeouter: -1,
+      withoutZero: localStorage.getItem('withoutZero') === 'true', // 去除日期补零
+      withoutYear: localStorage.getItem('withoutYear') === 'true', // 是否省略年份展示
+      sourceStr: '', // 源码字符串
+      testStr: `排期#起始时间：2021.12.23
+排期#结束时间：2022.1.25
+
+#自定义假期：2021.12.23,   2021.12.24， 2021.12.28
+#自定义上班时间：2021.12.25
+
+第一期
+一组：
+重构内容
+- 注册登录
+- 企业认证
+- 支付渠道
+时间规划
+- 开发#用时：4 天（12.23~12.28）
+- 联调#用时：2 天（12.29~12.30）
+- 测试过半#用时：3 天（1.4~1.5）
+- 回归测试并验收#用时：4 天（1.6~1.11）
+
+
+############# 使用说明 #############
+- 【必填】开头必须设置「起始时间」
+- 【必填】每项任务用时以「换行区分」，以「#用时：数字」作为标记
+- 【选填】开头选择设置排期「结束时间」，用于动态提醒，剩余可用时间
+- 【选填】开头选择设置「自定义假期」，将自动剔除该天的排期，以逗号或空格区分
+- 【选填】开头选择设置「自定义上班时间」，将自动增加该天为上班时间，以逗号或空格区分
+
+- 【注意】日期前的冒号，为中文冒号
+- 关键字有五个，其余文案均无影响，以原文形式输出
+  - #自定义假期（为了不被识别添加的文字）：2021.12.23,   2021.12.24， 2021.12.28
+  - #自定义上班时间（为了不被识别添加的文字）：2021.12.25
+  - #开始时间（为了不被识别添加的文字）：2022.1.18
+  - #结束时间（为了不被识别添加的文字）：2022.1.18
+  - #用时（为了不被识别添加的文字）：4
+
+
+     `, // 结果字符串
+      resultStr: '',
     }
   },
 
-  created() {
-    document.getElementById('loading') && document.getElementById('loading').remove()
+  watch: {
+    sourceStr: function(newValue) {
+      this.resultStr = this.parseData(newValue)
+    },
+    withoutYear: function(newValue) {
+      localStorage.setItem('withoutYear', newValue)
+      this.resultStr = this.parseData(this.sourceStr || this.testStr)
+    },
+    withoutZero: function(newValue) {
+      localStorage.setItem('withoutZero', newValue)
+      this.resultStr = this.parseData(this.sourceStr || this.testStr)
+    },
+  },
+
+  mounted() {
+    this.resultStr = this.parseData(this.testStr)
   },
 
   methods: {
-    // ajax 请求
-    ajax(options) {
-      options = options || {};
-      let xhr = new XMLHttpRequest();
-
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          let status = xhr.status;
-          if (status >= 200 && status < 300) {
-            options.success && options.success(xhr.response);
-          } else {
-            options.fail && options.fail(status);
-          }
-        }
-      };
-
-      xhr.open("GET", options.url, true);
-      xhr.send(null);
-    },
 
     // 格式化时间
-    formatTime(date, formatStr) {
+    formatTime(date, formatStr, withoutZero) {
       const formatType = {
         Y: date.getFullYear(),
         M: date.getMonth() + 1,
@@ -228,69 +308,143 @@ new Vue({
       }
       return formatStr.replace(
         /Y+|M+|D+|h+|m+|s+/g,
-        target => (new Array(target.length).join('0') + formatType[target[0]]).substr(-target.length)
+        target => ((withoutZero ? '' : new Array(target.length).join('0')) + formatType[target[0]]).substr(-target.length)
       )
     },
 
-    // 拷贝剪切板
-    copyToClipboard(content) {
-      clearTimeout(this.timeouter)
+    // 判断传入日期是否为法定假期
+    isHoliday(targetDate) {
+      // 判断除周六日外的法定节假日
+      if (holidays.indexOf(this.formatTime(targetDate, 'YYYY-MM-DD')) > -1) {
+        return true
+      }
+      // 判断除工作日外的调休工作日
+      if (workdays.indexOf(this.formatTime(targetDate, 'YYYY-MM-DD')) > -1) {
+        return false
+      }
+      // 判断周六日
+      return targetDate.getDay() === 6 || targetDate.getDay() === 0
+    },
 
+    // 获取工期有效时间
+    getValidDays(projectStartDate, projectEndDate) {
+      let allDays = (projectEndDate.getTime() - projectStartDate.getTime()) / 1000 / 60 / 60 / 24 + 1
+      let checkDayIndex = projectStartDate // 需要校验的日期
+      for (let i = 0, all = allDays; i < all; i++) {
+        if (this.isHoliday(checkDayIndex)) {
+          allDays--
+        }
+        checkDayIndex.setDate(checkDayIndex.getDate() + 1)
+      }
+      return allDays
+    },
+
+    // 添加自定义假期，自定义上班时间
+    addCustomHolidayAndWorkday(originStr) {
+      if (originStr.match(/#自定义假期：(\d+[./\-]\d+[./\-]\d+)/)) {
+        let targetLine = originStr.match(/#自定义假期：((\d+[./\-]\d+[./\-]\d+)[,， ]*)+/ig)[0]
+        holidays = [...holidays, ...targetLine.match(/(\d+[./\-]\d+[./\-]\d+)/ig)]
+      }
+      if (originStr.match(/#自定义上班时间：(\d+[./\-]\d+[./\-]\d+)/)) {
+        let targetLine = originStr.match(/#自定义上班时间：((\d+[./\-]\d+[./\-]\d+)[,， ]*)+/ig)[0]
+        workdays = [...workdays, ...targetLine.match(/(\d+[./\-]\d+[./\-]\d+)/ig)]
+      }
+      // 兼容时间格式分隔符，统一转化为 横杠区分
+      holidays = JSON.parse(JSON.stringify(holidays).replace(/[./\-]/g, '-'))
+      workdays = JSON.parse(JSON.stringify(workdays).replace(/[./\-]/g, '-'))
+      console.log('holidays', holidays)
+      console.log('workdays', workdays)
+    },
+
+    // 计算日历时间
+    parseData(originStr) {
+      // 添加自定义假期和工作日
+      this.addCustomHolidayAndWorkday(originStr)
+
+      // 项目开始时间
+      let projectStartDate = originStr.match(/#起始时间：(\d+[./\-]\d+[./\-]\d+)/)[1]
+      // 项目期望结束时间
+      let projectEndDate = null
+      // 获取总有效工期
+      let validDays = -1
+      // 剩余有效工期
+      let remainDays = -1
+      // 有输入项目期望结束时间
+      if (originStr.match(/#结束时间：(\d+[./\-]\d+[./\-]\d+)/)) {
+        projectEndDate = originStr.match(/#结束时间：(\d+[./\-]\d+[./\-]\d+)/)[1]
+        validDays = remainDays = this.getValidDays(new Date(projectStartDate), new Date(projectEndDate))
+      }
+
+      // 下一项任务的起始时间
+      let nextItemStartDate = new Date(projectStartDate)
+      // 获取时间分隔符
+      let splitKey = projectStartDate.match(/[^\d]/)[0]
+
+      let resultStr = originStr.split('\n').map(line => {
+        // 计算当前任务时间
+        if (line.match(/#用时：(\d+)/)) {
+
+          // 计算开始时间是否为可用时间
+          for (let i = 0; i < 30; i++) {
+            // 跳过周六日，及法定假期
+            if (!this.isHoliday(nextItemStartDate)) {
+              break;
+            }
+            nextItemStartDate.setDate(nextItemStartDate.getDate() + 1)
+          }
+
+          let itemStartDate = new Date(nextItemStartDate) // 单项任务开始时间
+          let nextDate = new Date(nextItemStartDate) // 单项任务开始时间的下一天
+          let needDate = line.match(/#用时：(\d+)/)[1] // 单项任务所需时间
+          remainDays -= needDate // 从剩余工期天数中，减去该项任务所需时间
+
+          // 遍历耗时中的每一天，跳过周六日和假期，补上调休时间
+          for (let i = 1; i < needDate; i++) {
+            nextDate.setDate(nextDate.getDate() + 1)
+            // 跳过周六日，及法定假期
+            if (this.isHoliday(nextDate)) {
+              i--
+            }
+          }
+
+          // 设置下一个任务的开发时间
+          nextItemStartDate = new Date(nextDate)
+          nextItemStartDate.setDate(nextItemStartDate.getDate() + 1)
+
+          // 在原任务字符串中，在最后添加该项任务的起始时间
+          return line + (`(${this.formatTime(itemStartDate, this.withoutYear ? `MM${splitKey}DD` : `YYYY${splitKey}MM${splitKey}DD`, this.withoutZero)}~${this.formatTime(nextDate, this.withoutYear ? `MM${splitKey}DD` : `YYYY${splitKey}MM${splitKey}DD`, this.withoutZero)})`)
+        } else {
+          return line
+        }
+      }).join('\n')
+
+      // 如果输入了期望结束时间，则添加可用工时字段
+      if (projectEndDate) {
+        resultStr = `总可用工时：${validDays}\n已使用工时：${validDays - remainDays}\n剩余可用工时：${remainDays}\n\n${resultStr}`
+      }
+      return resultStr
+    },
+
+    // 拷贝结果
+    copy() {
+      clearTimeout(this.timeouter)
+      this.tips = `复制成功`
+      this.timeouter = setTimeout(() => {this.tips = `带备注的 JSON 重排版工具，左源码，右结果`}, 1000)
       if (!document.queryCommandSupported('copy')) {
         return false
       }
 
       let $input = document.createElement('textarea')
       $input.style.opacity = '0'
-      $input.value = content
+      $input.value = this.resultStr
       document.body.appendChild($input)
       $input.select()
 
-      const result = document.execCommand('copy')
+      document.execCommand('copy')
       document.body.removeChild($input)
       $input = null
-
-      return result
-    },
-
-    // 创建时间轴
-    createTimeLineObj() {
-      this.timeLineObjList.push({
-        timeLineTitle: '',
-        timeLineStartTime: '', //
-        itemList: [], // 项目内容
-      })
-    },
-
-    // 删除时间轴项目信息
-    deleteTimeLineObj(timeLineObjIndex, itemIndex) {
-    },
-
-    // 向时间轴添加项目
-    createItem(timeLineObjIndex, newItemTitle, newItemDays) {
-      this.timeLineObjList[timeLineObjIndex].itemList.push({
-        itemTitle: newItemTitle, // 项目内容
-        itemDays: newItemDays, // 项目耗时
-        itemStartTime: '', // 项目开始时间
-        itemEndTime: '', // 项目结束时间
-      })
-    },
-
-    // 更新时间轴项目信息
-    updateItem(timeLineObjIndex, itemIndex, itemTitle, itemDays) {
-    },
-
-    // 删除时间轴项目信息
-    deleteItem(timeLineObjIndex, itemIndex) {
-    },
-
-    // 复制时间轴内容
-    copyTimeLineContent() {
-
     }
-
-  }
+  },
 })
 </script>
-
 </html>
