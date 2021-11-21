@@ -118,8 +118,8 @@
   }
   .tool-box {
     position: absolute;
-    top: 20px;
-    right: 30px;
+    top: -30px;
+    right: 20px;
     text-align: right;
   }
   i {
@@ -156,6 +156,7 @@
   <!--工具功能-->
   <div class="intro">
     <p>* 自动剔除法定节假日的排期工具，解决人为排日期的问题</p>
+    <p v-if="remainDayTips">* {{ remainDayTips }}</p>
   </div>
   <!--文件载入-->
   <section class="p-input-container">
@@ -183,7 +184,7 @@ var _hmt = _hmt || [];
 <script src="./vue.js"></script>
 <script>
 // 除周六日以外的法定假期
-let holidays = [
+let holidaysOrigin = [
   /********** 2021 节假日**********/
   '2021-01-01', '2021-01-02', '2021-01-03',
   '2021-02-11', '2021-02-12', '2021-02-13',
@@ -208,11 +209,10 @@ let holidays = [
   '2022-10-01', '2022-10-02', '2022-10-03',
   '2022-10-04', '2022-10-05', '2022-10-06',
   '2022-10-07'
-
 ]
 
 // 除工作日以外的调休工作日
-let workdays = [
+let workdaysOrigin = [
   /********** 2021 调休日**********/
   '2021-02-07', '2021-02-20', '2021-04-25',
   '2021-05-08', '2021-09-18', '2021-09-26',
@@ -233,8 +233,11 @@ new Vue({
     return {
       tips: '跳过节假日的排期工具，左计划，右结果',
       timeouter: -1,
+      holidays: [], // 假日列表
+      workdays: [], // 工作日列表
       withoutZero: localStorage.getItem('withoutZero') === 'true', // 去除日期补零
       withoutYear: localStorage.getItem('withoutYear') === 'true', // 是否省略年份展示
+      remainDayTips: '', // 剩余工期提示
       sourceStr: '', // 源码字符串
       testStr: `排期#起始时间：2021.12.23
 排期#结束时间：2022.1.25
@@ -315,11 +318,11 @@ new Vue({
     // 判断传入日期是否为法定假期
     isHoliday(targetDate) {
       // 判断除周六日外的法定节假日
-      if (holidays.indexOf(this.formatTime(targetDate, 'YYYY-MM-DD')) > -1) {
+      if (this.holidays.indexOf(this.formatTime(targetDate, 'YYYY-MM-DD')) > -1) {
         return true
       }
       // 判断除工作日外的调休工作日
-      if (workdays.indexOf(this.formatTime(targetDate, 'YYYY-MM-DD')) > -1) {
+      if (this.workdays.indexOf(this.formatTime(targetDate, 'YYYY-MM-DD')) > -1) {
         return false
       }
       // 判断周六日
@@ -343,23 +346,32 @@ new Vue({
     addCustomHolidayAndWorkday(originStr) {
       if (originStr.match(/#自定义假期：(\d+[./\-]\d+[./\-]\d+)/)) {
         let targetLine = originStr.match(/#自定义假期：((\d+[./\-]\d+[./\-]\d+)[,， ]*)+/ig)[0]
-        holidays = [...holidays, ...targetLine.match(/(\d+[./\-]\d+[./\-]\d+)/ig)]
+        this.holidays = [...holidaysOrigin, ...targetLine.match(/(\d+[./\-]\d+[./\-]\d+)/ig)]
+      } else {
+        this.holidays = [...holidaysOrigin]
       }
       if (originStr.match(/#自定义上班时间：(\d+[./\-]\d+[./\-]\d+)/)) {
         let targetLine = originStr.match(/#自定义上班时间：((\d+[./\-]\d+[./\-]\d+)[,， ]*)+/ig)[0]
-        workdays = [...workdays, ...targetLine.match(/(\d+[./\-]\d+[./\-]\d+)/ig)]
+        this.workdays = [...workdaysOrigin, ...targetLine.match(/(\d+[./\-]\d+[./\-]\d+)/ig)]
+      } else {
+        this.workdays = [...workdaysOrigin]
       }
       // 兼容时间格式分隔符，统一转化为 横杠区分
-      holidays = JSON.parse(JSON.stringify(holidays).replace(/[./\-]/g, '-'))
-      workdays = JSON.parse(JSON.stringify(workdays).replace(/[./\-]/g, '-'))
-      console.log('holidays', holidays)
-      console.log('workdays', workdays)
+      this.holidays = JSON.parse(JSON.stringify(this.holidays).replace(/[./\-]/g, '-'))
+      this.workdays = JSON.parse(JSON.stringify(this.workdays).replace(/[./\-]/g, '-'))
+      console.log('this.holidays', this.holidays)
+      console.log('this.workdays', this.workdays)
     },
 
     // 计算日历时间
     parseData(originStr) {
       // 添加自定义假期和工作日
       this.addCustomHolidayAndWorkday(originStr)
+
+      // 校验是否输入了「项目开始时间」
+      if(!originStr.match(/#起始时间：(\d+[./\-]\d+[./\-]\d+)/)){
+        return '请输入项目起始时间，示例如：xxx #起始时间：2021.12.23'
+      }
 
       // 项目开始时间
       let projectStartDate = originStr.match(/#起始时间：(\d+[./\-]\d+[./\-]\d+)/)[1]
@@ -419,8 +431,9 @@ new Vue({
       }).join('\n')
 
       // 如果输入了期望结束时间，则添加可用工时字段
+      this.remainDayTips = ''
       if (projectEndDate) {
-        resultStr = `总可用工时：${validDays}\n已使用工时：${validDays - remainDays}\n剩余可用工时：${remainDays}\n\n${resultStr}`
+        this.remainDayTips = `总可用工时：${validDays}；已使用工时：${validDays - remainDays}；剩余可用工时：${remainDays}`
       }
       return resultStr
     },
