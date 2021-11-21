@@ -281,7 +281,7 @@ new Vue({
 
   watch: {
     sourceStr: function(newValue) {
-      this.resultStr = this.parseData(newValue)
+      this.resultStr = this.parseData(newValue || this.testStr)
     },
     withoutYear: function(newValue) {
       localStorage.setItem('withoutYear', newValue)
