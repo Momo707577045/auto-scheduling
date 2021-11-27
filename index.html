@@ -76,51 +76,16 @@
     font-size: 12px;
     color: #666666;
   }
-  /*字体文件载入*/
-  .p-input-container {
+  .p-container {
     position: relative;
-    display: flex;
     padding-top: 6px;
   }
-  .p-input-container .line {
-    position: relative;
-    vertical-align: top;
-    width: 5px;
-    top: 100px;
-    height: calc(100vh - 400px);
-    transform-origin: top;
-    background-repeat: repeat;
-    background-image: url(http://www.luckly-mjw.cn/baseSource/icon-dotted-y.png);
-  }
-  .p-input-container .textarea-box, .result-box {
-    margin: 0 20px;
-    padding: 10px;
-    height: calc(100vh - 200px);
-    flex: 1;
-    position: relative;
-    display: flex;
-    white-space: pre;
+  .scheduling-item {
+    width: 100%;
+    height: 700px;
+    margin-bottom: 20px;
     text-align: left;
-    color: #333333;
-    vertical-align: text-top;
-    font-size: 14px;
-    overflow: auto;
-    border-radius: 4px;
-    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-  }
-  .textarea-box {
-    border: 1px solid #cccccc;
-    resize: none;
-  }
-  .result-box {
-    display: block;
-    border: 1px solid #bbbbbb;
-  }
-  .tool-box {
-    position: absolute;
-    top: -30px;
-    right: 20px;
-    text-align: right;
+    outline: none;
   }
   i {
     display: inline-block;
@@ -137,37 +102,36 @@
   i:hover, .active {
     opacity: 1;
   }
-  .schemaJSON {
-    position: absolute;
-    top: 20px;
-    left: calc(50% - 140px);
-    right: unset;
-  }
   </style>
 </head>
 <body>
 <section id="app" v-cloak="">
 
   <!--顶部操作提示-->
-  <section class="p-action g-box">{{ tips }}</section>
+  <section class="p-action g-box">跳过节假日的排期工具，左计划，右结果</section>
   <a class="p-github" target="_blank" href="https://github.com/Momo707577045/auto-scheduling">github</a>
   <a class="p-other" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
 
   <!--工具功能-->
   <div class="intro">
     <p>* 自动剔除法定节假日的排期工具，解决人为排日期的问题</p>
-    <p v-if="remainDayTips">* {{ remainDayTips }}</p>
+    <p>* 【选填】#自定义假期：2021.12.23, 2021-12-24， 2021/12/28（设置除法定节假日外的假期时间，将自动剔除该天的排期，以逗号或空格区分）</p>
+    <p>* 【选填】#自定义上班时间：2021.12.23（将自动增加该天为上班时间，以逗号或空格区分）</p>
+    <p>* 【必填】#开始时间：2021.12.23（必填，用于计算排期时间）</p>
+    <p>* 【选填】#结束时间：2022.1.25（用于动态提醒，剩余可用时间）</p>
+    <p>* 【必填】#用时：7 天</p>
   </div>
   <!--文件载入-->
-  <section class="p-input-container">
-    <textarea v-model="sourceStr" class="textarea-box" :placeholder="testStr"></textarea>
-    <div class="line"></div>
-    <textarea class="result-box" v-model="resultStr" readonly></textarea>
-    <div class="tool-box">
-      <i class="withoutZero" :class="{active:withoutZero}" @click="withoutZero=!withoutZero">去除日期补零</i>
-      <i class="withoutYear" :class="{active:withoutYear}" @click="withoutYear=!withoutYear">去除年</i>
-      <i class="copy" @click="copy(resultStr)">复制</i>
-    </div>
+  <section class="p-container">
+    <scheduling-item
+      v-for="(item, index) in schedulingList"
+      class="scheduling-item"
+      ref="$schedulingList"
+      :key="item.key"
+      :origin-value="item.originValue"
+      @add-item="addItem(index)"
+      @delete-item="deleteItem(index)"
+    />
   </section>
 </section>
 </body>
@@ -182,280 +146,49 @@ var _hmt = _hmt || [];
 </script>
 <!--vue 前端框架-->
 <script src="./vue.js"></script>
+<script src="./scheduling-item.js"></script>
 <script>
-// 除周六日以外的法定假期
-let holidaysOrigin = [
-  /********** 2021 节假日**********/
-  '2021-01-01', '2021-01-02', '2021-01-03',
-  '2021-02-11', '2021-02-12', '2021-02-13',
-  '2021-02-14', '2021-02-15', '2021-02-16',
-  '2021-02-17', '2021-04-03', '2021-04-04',
-  '2021-04-05', '2021-05-01', '2021-05-02',
-  '2021-05-03', '2021-05-04', '2021-05-05',
-  '2021-06-12', '2021-06-13', '2021-06-14',
-  '2021-09-19', '2021-09-20', '2021-09-21',
-  '2021-10-01', '2021-10-02', '2021-10-03',
-  '2021-10-04', '2021-10-05', '2021-10-06',
-  '2021-10-07',
-  /********** 2022 节假日**********/
-  '2022-01-01', '2022-01-02', '2022-01-03',
-  '2022-01-31', '2022-02-01', '2022-02-02',
-  '2022-02-03', '2022-02-04', '2022-02-05',
-  '2022-02-06', '2022-04-03', '2022-04-04',
-  '2022-04-05', '2022-04-30', '2022-05-01',
-  '2022-05-02', '2022-05-03', '2022-05-04',
-  '2022-06-03', '2022-06-04', '2022-06-05',
-  '2022-09-10', '2022-09-11', '2022-09-12',
-  '2022-10-01', '2022-10-02', '2022-10-03',
-  '2022-10-04', '2022-10-05', '2022-10-06',
-  '2022-10-07'
-]
-
-// 除工作日以外的调休工作日
-let workdaysOrigin = [
-  /********** 2021 调休日**********/
-  '2021-02-07', '2021-02-20', '2021-04-25',
-  '2021-05-08', '2021-09-18', '2021-09-26',
-  '2021-10-09',
-  /********** 2022 调休日**********/
-  '2022-01-29', '2022-01-30', '2022-04-02',
-  '2022-04-24', '2022-05-07', '2022-10-08',
-  '2022-10-09'
-]
-
-// #自定义假期：2021.12.23,   2021.12.24 2021.12.28
-// #自定义上班时间：2021.12.25
 
 new Vue({
   el: '#app',
+  components: {
+    'scheduling-item': window.schedulingItem,
+  },
 
   data() {
     return {
-      tips: '跳过节假日的排期工具，左计划，右结果',
-      timeouter: -1,
-      holidays: [], // 假日列表
-      workdays: [], // 工作日列表
-      withoutZero: localStorage.getItem('withoutZero') === 'true', // 去除日期补零
-      withoutYear: localStorage.getItem('withoutYear') === 'true', // 是否省略年份展示
-      remainDayTips: '', // 剩余工期提示
-      sourceStr: '', // 源码字符串
-      testStr: `排期#起始时间：2021.12.23
-排期#结束时间：2022.1.25
-
-#自定义假期：2021.12.23,   2021.12.24， 2021.12.28
-#自定义上班时间：2021.12.25
-
-第一期
-一组：
-重构内容
-- 注册登录
-- 企业认证
-- 支付渠道
-时间规划
-- 开发#用时：4 天
-- 联调#用时：2 天
-- 测试过半#用时：3 天
-- 回归测试并验收#用时：4 天
-
-
-############# 使用说明 #############
-- 【必填】开头必须设置「起始时间」
-- 【必填】每项任务用时以「换行区分」，以「#用时：数字」作为标记
-- 【选填】开头选择设置排期「结束时间」，用于动态提醒，剩余可用时间
-- 【选填】开头选择设置「自定义假期」，将自动剔除该天的排期，以逗号或空格区分
-- 【选填】开头选择设置「自定义上班时间」，将自动增加该天为上班时间，以逗号或空格区分
-
-- 【注意】日期前的冒号，为中文冒号
-- 关键字有五个，其余文案均无影响，以原文形式输出
-  - #自定义假期（为了不被识别添加的文字）：2021.12.23,   2021.12.24， 2021.12.28
-  - #自定义上班时间（为了不被识别添加的文字）：2021.12.25
-  - #开始时间（为了不被识别添加的文字）：2022.1.18
-  - #结束时间（为了不被识别添加的文字）：2022.1.18
-  - #用时（为了不被识别添加的文字）：4
-
-
-     `,
-      resultStr: '', // 结果字符串
+      schedulingList: [], // 排期列表数
     }
   },
+  created() {
+    // 根据本地缓存，恢复数据
+    if (localStorage.getItem('auto-scheduling')) {
+      let sourceStrList = JSON.parse(localStorage.getItem('auto-scheduling'))
+      console.log('sourceStrList', sourceStrList)
+      sourceStrList.forEach(item => this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
+      console.log('this.schedulingList', this.schedulingList)
+    } else {
+      this.schedulingList.push({ originValue: '', key: new Date().getTime() })
+    }
 
-  watch: {
-    sourceStr: function(newValue) {
-      this.resultStr = this.parseData(newValue || this.testStr)
-    },
-    withoutYear: function(newValue) {
-      localStorage.setItem('withoutYear', newValue)
-      this.resultStr = this.parseData(this.sourceStr || this.testStr)
-    },
-    withoutZero: function(newValue) {
-      localStorage.setItem('withoutZero', newValue)
-      this.resultStr = this.parseData(this.sourceStr || this.testStr)
-    },
-  },
-
-  mounted() {
-    this.resultStr = this.parseData(this.testStr)
+    // 每秒同步一次数据
+    setInterval(() => {
+      let sourceStrList = []
+      this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
+      localStorage.setItem('auto-scheduling', JSON.stringify(sourceStrList))
+    }, 400)
   },
 
   methods: {
-
-    // 格式化时间
-    formatTime(date, formatStr, withoutZero) {
-      const formatType = {
-        Y: date.getFullYear(),
-        M: date.getMonth() + 1,
-        D: date.getDate(),
-        h: date.getHours(),
-        m: date.getMinutes(),
-        s: date.getSeconds(),
-      }
-      return formatStr.replace(
-        /Y+|M+|D+|h+|m+|s+/g,
-        target => ((withoutZero ? '' : new Array(target.length).join('0')) + formatType[target[0]]).substr(-target.length)
-      )
+    // 添加项目
+    addItem(preIndex) {
+      let item = { originValue: '', ref: null, key: new Date().getTime() }
+      this.schedulingList.splice(preIndex + 1, 0, item)
     },
 
-    // 判断传入日期是否为法定假期
-    isHoliday(targetDate) {
-      // 判断除周六日外的法定节假日
-      if (this.holidays.indexOf(this.formatTime(targetDate, 'YYYY-MM-DD')) > -1) {
-        return true
-      }
-      // 判断除工作日外的调休工作日
-      if (this.workdays.indexOf(this.formatTime(targetDate, 'YYYY-MM-DD')) > -1) {
-        return false
-      }
-      // 判断周六日
-      return targetDate.getDay() === 6 || targetDate.getDay() === 0
-    },
-
-    // 获取工期有效时间
-    getValidDays(projectStartDate, projectEndDate) {
-      let allDays = (projectEndDate.getTime() - projectStartDate.getTime()) / 1000 / 60 / 60 / 24 + 1
-      let checkDayIndex = projectStartDate // 需要校验的日期
-      for (let i = 0, all = allDays; i < all; i++) {
-        if (this.isHoliday(checkDayIndex)) {
-          allDays--
-        }
-        checkDayIndex.setDate(checkDayIndex.getDate() + 1)
-      }
-      return allDays
-    },
-
-    // 添加自定义假期，自定义上班时间
-    addCustomHolidayAndWorkday(originStr) {
-      if (originStr.match(/#自定义假期：(\d+[./\-]\d+[./\-]\d+)/)) {
-        let targetLine = originStr.match(/#自定义假期：((\d+[./\-]\d+[./\-]\d+)[,， ]*)+/ig)[0]
-        this.holidays = [...holidaysOrigin, ...targetLine.match(/(\d+[./\-]\d+[./\-]\d+)/ig)]
-      } else {
-        this.holidays = [...holidaysOrigin]
-      }
-      if (originStr.match(/#自定义上班时间：(\d+[./\-]\d+[./\-]\d+)/)) {
-        let targetLine = originStr.match(/#自定义上班时间：((\d+[./\-]\d+[./\-]\d+)[,， ]*)+/ig)[0]
-        this.workdays = [...workdaysOrigin, ...targetLine.match(/(\d+[./\-]\d+[./\-]\d+)/ig)]
-      } else {
-        this.workdays = [...workdaysOrigin]
-      }
-      // 兼容时间格式分隔符，统一转化为 横杠区分
-      this.holidays = JSON.parse(JSON.stringify(this.holidays).replace(/[./\-]/g, '-'))
-      this.workdays = JSON.parse(JSON.stringify(this.workdays).replace(/[./\-]/g, '-'))
-      console.log('this.holidays', this.holidays)
-      console.log('this.workdays', this.workdays)
-    },
-
-    // 计算日历时间
-    parseData(originStr) {
-      // 添加自定义假期和工作日
-      this.addCustomHolidayAndWorkday(originStr)
-
-      // 校验是否输入了「项目开始时间」
-      if(!originStr.match(/#起始时间：(\d+[./\-]\d+[./\-]\d+)/)){
-        return '请输入项目起始时间，示例如：xxx #起始时间：2021.12.23'
-      }
-
-      // 项目开始时间
-      let projectStartDate = originStr.match(/#起始时间：(\d+[./\-]\d+[./\-]\d+)/)[1]
-      // 项目期望结束时间
-      let projectEndDate = null
-      // 获取总有效工期
-      let validDays = -1
-      // 剩余有效工期
-      let remainDays = -1
-      // 有输入项目期望结束时间
-      if (originStr.match(/#结束时间：(\d+[./\-]\d+[./\-]\d+)/)) {
-        projectEndDate = originStr.match(/#结束时间：(\d+[./\-]\d+[./\-]\d+)/)[1]
-        validDays = remainDays = this.getValidDays(new Date(projectStartDate), new Date(projectEndDate))
-      }
-
-      // 下一项任务的起始时间
-      let nextItemStartDate = new Date(projectStartDate)
-      // 获取时间分隔符
-      let splitKey = projectStartDate.match(/[^\d]/)[0]
-
-      let resultStr = originStr.split('\n').map(line => {
-        // 计算当前任务时间
-        if (line.match(/#用时：(\d+)/)) {
-
-          // 计算开始时间是否为可用时间
-          for (let i = 0; i < 30; i++) {
-            // 跳过周六日，及法定假期
-            if (!this.isHoliday(nextItemStartDate)) {
-              break;
-            }
-            nextItemStartDate.setDate(nextItemStartDate.getDate() + 1)
-          }
-
-          let itemStartDate = new Date(nextItemStartDate) // 单项任务开始时间
-          let nextDate = new Date(nextItemStartDate) // 单项任务开始时间的下一天
-          let needDate = line.match(/#用时：(\d+)/)[1] // 单项任务所需时间
-          remainDays -= needDate // 从剩余工期天数中，减去该项任务所需时间
-
-          // 遍历耗时中的每一天，跳过周六日和假期，补上调休时间
-          for (let i = 1; i < needDate; i++) {
-            nextDate.setDate(nextDate.getDate() + 1)
-            // 跳过周六日，及法定假期
-            if (this.isHoliday(nextDate)) {
-              i--
-            }
-          }
-
-          // 设置下一个任务的开发时间
-          nextItemStartDate = new Date(nextDate)
-          nextItemStartDate.setDate(nextItemStartDate.getDate() + 1)
-
-          // 在原任务字符串中，在最后添加该项任务的起始时间
-          return line + (`(${this.formatTime(itemStartDate, this.withoutYear ? `MM${splitKey}DD` : `YYYY${splitKey}MM${splitKey}DD`, this.withoutZero)}~${this.formatTime(nextDate, this.withoutYear ? `MM${splitKey}DD` : `YYYY${splitKey}MM${splitKey}DD`, this.withoutZero)})`)
-        } else {
-          return line
-        }
-      }).join('\n')
-
-      // 如果输入了期望结束时间，则添加可用工时字段
-      this.remainDayTips = ''
-      if (projectEndDate) {
-        this.remainDayTips = `总可用工时：${validDays}；已使用工时：${validDays - remainDays}；剩余可用工时：${remainDays}`
-      }
-      return resultStr
-    },
-
-    // 拷贝结果
-    copy() {
-      clearTimeout(this.timeouter)
-      this.tips = `复制成功`
-      this.timeouter = setTimeout(() => {this.tips = `跳过节假日的排期工具，左计划，右结果`}, 1000)
-      if (!document.queryCommandSupported('copy')) {
-        return false
-      }
-
-      let $input = document.createElement('textarea')
-      $input.style.opacity = '0'
-      $input.value = this.resultStr
-      document.body.appendChild($input)
-      $input.select()
-
-      document.execCommand('copy')
-      document.body.removeChild($input)
-      $input = null
+    // 删除特定项目
+    deleteItem(index) {
+      this.schedulingList.length > 1 && this.schedulingList.splice(index, 1)
     }
   },
 })
