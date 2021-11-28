@@ -29,44 +29,27 @@
     font-weight: bold;
     white-space: pre-line;
   }
-  .p-github, .p-other {
+  .bottom-tool {
     position: fixed;
     right: 50px;
-    bottom: 70px;
+    bottom: 20px;
+    z-index: 999;
+  }
+  .bottom-tool-item {
+    display: inline-block;
     background-color: #eff3f6;
     background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
     color: #24292e;
     border: 1px solid rgba(27, 31, 35, .2);
     border-radius: 3px;
     cursor: pointer;
-    display: inline-block;
     font-size: 14px;
     font-weight: 600;
     line-height: 20px;
     padding: 6px 12px;
-    z-index: 2;
   }
-  .p-help {
-    position: fixed;
-    right: 50px;
-    top: 50px;
-    width: 30px;
-    height: 30px;
-    color: #666666;
-    z-index: 2;
-    line-height: 30px;
-    font-weight: bolder;
-    border-radius: 50%;
-    border: 1px solid rgba(27, 31, 35, .2);
-    cursor: pointer;
-    background-color: #eff3f6;
-    background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
-  }
-  .p-github:hover, .p-other:hover, .p-help {
+  .bottom-tool-item:hover {
     opacity: 0.9;
-  }
-  .p-other {
-    bottom: 30px;
   }
   .intro {
     padding-left: 20px;
@@ -109,15 +92,19 @@
 
   <!--顶部操作提示-->
   <section class="p-action g-box">跳过节假日的排期工具，左计划，右结果</section>
-  <a class="p-github" target="_blank" href="https://github.com/Momo707577045/auto-scheduling">github</a>
-  <a class="p-other" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
+  <div class="bottom-tool">
+    <a class="bottom-tool-item" target="_blank" href="https://github.com/Momo707577045/auto-scheduling">github</a>
+    <a class="bottom-tool-item" target="_blank" href="./2021.html">2021 年历</a>
+    <a class="bottom-tool-item" target="_blank" href="./2022.html">2022 年历</a>
+    <a class="bottom-tool-item" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
+  </div>
 
   <!--工具功能-->
   <div class="intro">
     <p>* 自动剔除法定节假日的排期工具，解决人为排日期的问题</p>
     <p>* 【选填】#自定义假期：2021.12.23, 2021-12-24， 2021/12/28（设置除法定节假日外的假期时间，将自动剔除该天的排期，以逗号或空格区分）</p>
     <p>* 【选填】#自定义上班时间：2021.12.23（将自动增加该天为上班时间，以逗号或空格区分）</p>
-    <p>* 【必填】#开始时间：2021.12.23（必填，用于计算排期时间）</p>
+    <p>* 【必填】#起始时间：2021.12.23（必填，用于计算排期时间）</p>
     <p>* 【选填】#结束时间：2022.1.25（用于动态提醒，剩余可用时间）</p>
     <p>* 【必填】#用时：7 天</p>
   </div>
