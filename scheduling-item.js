@@ -183,7 +183,7 @@ window.schedulingItem = {
   },
 
   mounted() {
-    this.resultStr = this.parseData(this.testStr)
+    this.resultStr = this.parseData(this.sourceStr || this.testStr)
   },
 
   methods: {
@@ -322,7 +322,7 @@ window.schedulingItem = {
       // 如果输入了期望结束时间，则添加可用工时字段
       this.remainDayTips = ''
       if (projectEndDate) {
-        this.remainDayTips = `总可用工时：${validDays}；已使用工时：${validDays - remainDays}；剩余可用工时：${remainDays}`
+        this.remainDayTips = `总可用工时：${validDays}；已使用工时：${validDays - remainDays}（${((validDays - remainDays)/validDays).toFixed(2)}）；剩余可用工时：${remainDays}`
       }
       return resultStr
     },

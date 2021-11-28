@@ -133,7 +133,8 @@
 
   <!--右侧操作-->
   <div class="action">
-    <i @click="saveData">生成分享链接</i>
+    <i @click="saveData(true)">生成副本</i>
+    <i @click="saveData(false)">生成分享链接/保存</i>
   </div>
 
   <!--文件载入-->
@@ -213,17 +214,20 @@ new Vue({
         appId: 'GQPeMgVcofGJdnNDQw7Vj6da-gzGzoHsz',
         appKey: 'JjJi4eNhRgU5QqIjyGPICd9P',
       })
-      AV.User.logIn('scheduling', 'scheduling')
-      if (this.id) {
-        this.schedulingList = []
-        let query = new AV.Query('scheduling');
-        query.get(this.id).then((detailData) => {
-          JSON.parse(detailData.attributes.sourceStrList).forEach(item =>
-            this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
-        }).catch(function(error) {
-          alert(JSON.stringify(error));
-        });
-      }
+      AV.User.logIn('scheduling', 'scheduling').then(() => {
+        console.log('login success')
+        if (this.id) {
+          this.schedulingList = []
+          this.saveLink = `${location.href.split('?')[0]}?id=${this.id}`
+          let query = new AV.Query('scheduling');
+          query.get(this.id).then((detailData) => {
+            JSON.parse(detailData.attributes.sourceStrList).forEach(item =>
+              this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
+          }).catch(function(error) {
+            alert(JSON.stringify(error));
+          });
+        }
+      })
     },
 
     // 添加项目
@@ -238,27 +242,31 @@ new Vue({
     },
 
     // 将数据保存到远端
-    saveData() {
+    saveData(createCopy) {
       let sourceStrList = []
       this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
       const schedulingClass = AV.Object.extend('scheduling')
       let scheduling = new schedulingClass()
-      this.id && scheduling.set('id', this.id) // 如果数据存在，则更新
-      scheduling.set('sourceStrList', JSON.stringify(sourceStrList)) // 当前环境
+      this.id && !createCopy && scheduling.set('id', this.id) // 如果数据存在，却不是创建副本，则更新
+      scheduling.set('sourceStrList', JSON.stringify(sourceStrList))
       scheduling.save().then((res) => {
-        this.saveLink = `${location.href.split('?')[0]}?id=${res.id}`
+        if (createCopy) {
+          window.open(`${location.href.split('?')[0]}?id=${res.id}`)
+        } else {
+          this.saveLink = `${location.href.split('?')[0]}?id=${res.id}`
 
-        let $input = document.createElement('textarea')
-        $input.style.opacity = '0'
-        $input.value = this.saveLink
-        document.body.appendChild($input)
-        $input.select()
+          let $input = document.createElement('textarea')
+          $input.style.opacity = '0'
+          $input.value = this.saveLink
+          document.body.appendChild($input)
+          $input.select()
 
-        document.execCommand('copy')
-        document.body.removeChild($input)
-        $input = null
-
-        alert(`数据上报成功，信息ID为：${res.id}，分享链接已复制`)
+          document.execCommand('copy')
+          document.body.removeChild($input)
+          $input = null
+          window.history.replaceState(null, '', this.saveLink)
+        }
+        alert(`保存成功，信息ID为：${res.id}，分享链接已复制`)
       }, function(error) {
         alert(JSON.stringify(error));
       });
