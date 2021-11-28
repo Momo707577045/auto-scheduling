@@ -183,7 +183,6 @@ window.schedulingItem = {
   },
 
   mounted() {
-    console.log('originValue', this.originValue)
     this.resultStr = this.parseData(this.testStr)
   },
 

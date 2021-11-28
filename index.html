@@ -59,6 +59,27 @@
     font-size: 12px;
     color: #666666;
   }
+  .action {
+    position: absolute;
+    top: 100px;
+    right: 56px;
+    text-align: right;
+  }
+  .action i {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid #aaaaaa;
+    background-color: #3D8AC7;
+    opacity: 0.7;
+    transition: 0.3s all;
+  }
+  .action i:hover, .active {
+    opacity: 1;
+  }
   .p-container {
     position: relative;
     padding-top: 6px;
@@ -99,8 +120,9 @@
     <a class="bottom-tool-item" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
   </div>
 
-  <!--工具功能-->
+  <!--使用说明-->
   <div class="intro">
+    <p>分享链接：{{saveLink}}</p>
     <p>* 自动剔除法定节假日的排期工具，解决人为排日期的问题</p>
     <p>* 【选填】#自定义假期：2021.12.23, 2021-12-24， 2021/12/28（设置除法定节假日外的假期时间，将自动剔除该天的排期，以逗号或空格区分）</p>
     <p>* 【选填】#自定义上班时间：2021.12.23（将自动增加该天为上班时间，以逗号或空格区分）</p>
@@ -108,6 +130,12 @@
     <p>* 【选填】#结束时间：2022.1.25（用于动态提醒，剩余可用时间）</p>
     <p>* 【必填】#用时：7 天</p>
   </div>
+
+  <!--右侧操作-->
+  <div class="action">
+    <i @click="saveData">生成分享链接</i>
+  </div>
+
   <!--文件载入-->
   <section class="p-container">
     <scheduling-item
@@ -132,9 +160,13 @@ var _hmt = _hmt || [];
 })();
 </script>
 <!--vue 前端框架-->
+<script src="https://cdn1.lncld.net/static/js/av-min-1.2.1.js"></script>
 <script src="./vue.js"></script>
 <script src="./scheduling-item.js"></script>
+
 <script>
+let urlObj = new URL(location.href)
+let id = urlObj.searchParams.get('id')
 
 new Vue({
   el: '#app',
@@ -144,29 +176,56 @@ new Vue({
 
   data() {
     return {
+      id: id,
+      saveLink: '', // 分享用的链接
       schedulingList: [], // 排期列表数
     }
   },
-  created() {
-    // 根据本地缓存，恢复数据
-    if (localStorage.getItem('auto-scheduling')) {
-      let sourceStrList = JSON.parse(localStorage.getItem('auto-scheduling'))
-      console.log('sourceStrList', sourceStrList)
-      sourceStrList.forEach(item => this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
-      console.log('this.schedulingList', this.schedulingList)
-    } else {
-      this.schedulingList.push({ originValue: '', key: new Date().getTime() })
-    }
 
-    // 每秒同步一次数据
-    setInterval(() => {
-      let sourceStrList = []
-      this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
-      localStorage.setItem('auto-scheduling', JSON.stringify(sourceStrList))
-    }, 400)
+  mounted() {
+    this.initLocalData()
+    this.initAV()
   },
 
   methods: {
+    initLocalData() {
+      // 根据本地缓存，恢复数据
+      if (localStorage.getItem('auto-scheduling')) {
+        let sourceStrList = JSON.parse(localStorage.getItem('auto-scheduling'))
+        sourceStrList.forEach(item => this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
+      } else {
+        this.schedulingList.push({ originValue: '', key: new Date().getTime() })
+      }
+
+      // 每秒同步一次数据
+      setInterval(() => {
+        if (this.$refs.$schedulingList) {
+          let sourceStrList = []
+          this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
+          localStorage.setItem('auto-scheduling', JSON.stringify(sourceStrList))
+        }
+      }, 400)
+    },
+
+    // 初始化 leanCloud 存储
+    initAV() {
+      AV.init({
+        appId: 'GQPeMgVcofGJdnNDQw7Vj6da-gzGzoHsz',
+        appKey: 'JjJi4eNhRgU5QqIjyGPICd9P',
+      })
+      AV.User.logIn('scheduling', 'scheduling')
+      if (this.id) {
+        this.schedulingList = []
+        let query = new AV.Query('scheduling');
+        query.get(this.id).then((detailData) => {
+          JSON.parse(detailData.attributes.sourceStrList).forEach(item =>
+            this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
+        }).catch(function(error) {
+          alert(JSON.stringify(error));
+        });
+      }
+    },
+
     // 添加项目
     addItem(preIndex) {
       let item = { originValue: '', ref: null, key: new Date().getTime() }
@@ -176,6 +235,33 @@ new Vue({
     // 删除特定项目
     deleteItem(index) {
       this.schedulingList.length > 1 && this.schedulingList.splice(index, 1)
+    },
+
+    // 将数据保存到远端
+    saveData() {
+      let sourceStrList = []
+      this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
+      const schedulingClass = AV.Object.extend('scheduling')
+      let scheduling = new schedulingClass()
+      this.id && scheduling.set('id', this.id) // 如果数据存在，则更新
+      scheduling.set('sourceStrList', JSON.stringify(sourceStrList)) // 当前环境
+      scheduling.save().then((res) => {
+        this.saveLink = `${location.href.split('?')[0]}?id=${res.id}`
+
+        let $input = document.createElement('textarea')
+        $input.style.opacity = '0'
+        $input.value = this.saveLink
+        document.body.appendChild($input)
+        $input.select()
+
+        document.execCommand('copy')
+        document.body.removeChild($input)
+        $input = null
+
+        alert(`数据上报成功，信息ID为：${res.id}，分享链接已复制`)
+      }, function(error) {
+        alert(JSON.stringify(error));
+      });
     }
   },
 })

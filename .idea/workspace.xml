@@ -2,33 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dd9d763f-1130-44d6-9ca9-a0a607d117ab" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/2022.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-10.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-11.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-12.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2021-9.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-10.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-11.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-12.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/calendar/2022-9.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scheduling-item.js" beforeDir="false" afterPath="$PROJECT_DIR$/scheduling-item.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -46,8 +22,17 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="32" column="20" lean-forward="true" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="20" />
+            <state relative-caret-position="309">
+              <caret line="119" column="55" selection-start-line="119" selection-start-column="55" selection-end-line="119" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scheduling-item.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scheduling-item.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="476">
+              <caret line="52" column="6" selection-start-line="52" selection-start-column="6" selection-end-line="52" selection-end-column="103" />
             </state>
           </provider>
         </entry>
@@ -56,8 +41,8 @@
         <entry file="file://$PROJECT_DIR$/todo.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="247">
-                <caret line="13" column="19" lean-forward="true" selection-start-line="13" selection-start-column="19" selection-end-line="13" selection-end-column="19" />
+              <first_editor relative-caret-position="95">
+                <caret line="5" column="18" lean-forward="true" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
               </first_editor>
               <second_editor>
                 <markdownNavigatorState />
@@ -89,10 +74,12 @@
       <find>$schedulingList</find>
       <find>value</find>
       <find>workdaysOrigin</find>
-      <find>originValue</find>
-      <find>p-action</find>
       <find>2021</find>
       <find>intro</find>
+      <find>id</find>
+      <find>bug</find>
+      <find>originValue</find>
+      <find>p-action</find>
     </findStrings>
     <replaceStrings>
       <replace>createItem</replace>
@@ -100,8 +87,9 @@
       <replace>projectEndDate</replace>
       <replace>validDays</replace>
       <replace>this.workdays</replace>
-      <replace>2022</replace>
       <replace>originValue</replace>
+      <replace>2022</replace>
+      <replace>scheduling</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -114,11 +102,13 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/index-inner.html" />
         <option value="$PROJECT_DIR$/inner.js" />
-        <option value="$PROJECT_DIR$/scheduling-item.js" />
         <option value="$PROJECT_DIR$/../../../../../intruction/todo-bihu.md" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/2022.html" />
         <option value="$PROJECT_DIR$/2021.html" />
+        <option value="$PROJECT_DIR$/tinypngReport.json" />
+        <option value="$PROJECT_DIR$/tinypngMd5Record.json" />
+        <option value="$PROJECT_DIR$/scheduling-item.js" />
+        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/todo.md" />
       </list>
     </option>
@@ -331,16 +321,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scheduling-item.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1159">
-          <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
-          <folding>
-            <element signature="n#style#0;n#i#4;n#div#0;n#section#0;n#section#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
@@ -389,18 +369,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tinypngReport.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="18" column="97" lean-forward="true" selection-start-line="18" selection-start-column="97" selection-end-line="18" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tinypngMd5Record.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="16" column="37" lean-forward="true" selection-start-line="16" selection-start-column="37" selection-end-line="16" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.dom.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="501">
+          <caret line="13399" column="25" selection-start-line="13399" selection-start-column="13" selection-end-line="13399" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scheduling-item.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="52" column="6" selection-start-line="52" selection-start-column="6" selection-end-line="52" selection-end-column="103" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="32" column="20" lean-forward="true" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="20" />
+        <state relative-caret-position="309">
+          <caret line="119" column="55" selection-start-line="119" selection-start-column="55" selection-end-line="119" selection-end-column="55" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/todo.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="247">
-            <caret line="13" column="19" lean-forward="true" selection-start-line="13" selection-start-column="19" selection-end-line="13" selection-end-column="19" />
+          <first_editor relative-caret-position="95">
+            <caret line="5" column="18" lean-forward="true" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
           </first_editor>
           <second_editor>
             <markdownNavigatorState />
