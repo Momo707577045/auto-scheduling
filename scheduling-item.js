@@ -47,7 +47,7 @@ window.schedulingItem = {
   <p v-if="remainDayTips">* {{ remainDayTips }}</p>
   <!--文件载入-->
   <section class="p-input-container">
-    <textarea v-model="sourceStr" class="textarea-box" :placeholder="testStr"></textarea>
+    <textarea class="textarea-box" v-model="sourceStr" :placeholder="testStr"></textarea>
     <textarea class="result-box" v-model="resultStr" readonly></textarea>
     <div class="tool-box">
       <i class="withoutZero" :class="{active:withoutZero}" @click="withoutZero=!withoutZero">去除日期补零</i>
@@ -125,22 +125,35 @@ window.schedulingItem = {
     white-space: pre;
     text-align: left;
     color: #333333;
+    padding: 12px;
     vertical-align: text-top;
     font-size: 14px;
     overflow: auto;
+    resize: none;
+    border: 1px solid #cccccc;
     border-radius: 4px;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   }
   .textarea-box {
     margin-right: 20px;
-    padding: 12px;
-    border: 1px solid #cccccc;
-    resize: none;
   }
-  .result-box {
-    padding: 12px;
-    display: block;
-    border: 1px solid #bbbbbb;
+  
+  /*高宽分别对应横竖滚动条的尺寸*/
+  .textarea-box::-webkit-scrollbar, .result-box::-webkit-scrollbar {
+    width: 8px;  
+    height: 8px;
+  }
+  .textarea-box::-webkit-scrollbar-thumb, .result-box::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #535353;
+  }
+  .textarea-box::-webkit-scrollbar-thumb, .result-box::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    background: #ededed;
   }
   .tool-box {
     position: absolute;

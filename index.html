@@ -128,7 +128,7 @@
     <p>* 【选填】#自定义上班时间：2021.12.23（将自动增加该天为上班时间，以逗号或空格区分）</p>
     <p>* 【必填】#起始时间：2021.12.23（必填，用于计算排期时间）</p>
     <p>* 【选填】#结束时间：2022.1.25（用于动态提醒，剩余可用时间）</p>
-    <p>* 【必填】#用时：7 天</p>
+    <p>* 【必填】#用时：7 天（设置项目用时，如开发#用时：7 天）</p>
   </div>
 
   <!--右侧操作-->
@@ -238,7 +238,9 @@ new Vue({
 
     // 删除特定项目
     deleteItem(index) {
-      this.schedulingList.length > 1 && this.schedulingList.splice(index, 1)
+      if (confirm("确定要删除吗？")) {
+        this.schedulingList.length > 1 && this.schedulingList.splice(index, 1)
+      }
     },
 
     // 将数据保存到远端
