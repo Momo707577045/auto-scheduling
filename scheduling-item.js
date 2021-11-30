@@ -44,7 +44,8 @@ window.schedulingItem = {
   <div v-html="styleStr"></div>
 
   <!--工具功能-->
-  <p v-if="remainDayTips">* {{ remainDayTips }}</p>
+  <p style="padding-bottom: 10px">* 完成时间：<span v-for="(item, index) in finishDate">【{{ index + 1 }} 线：{{item}}】</span></p>
+  <p>* {{ remainDayTips }}</p>
   <!--文件载入-->
   <section class="p-input-container">
     <textarea class="textarea-box" v-model="sourceStr" :placeholder="testStr"></textarea>
@@ -68,6 +69,8 @@ window.schedulingItem = {
       timeouter: -1,
       holidays: [], // 假日列表
       workdays: [], // 工作日列表
+      needDate: [], // 多线并行时，各线需要的时间
+      finishDate: ['', '', '', '', '', '', '', ''], // 多线并行时完成时间
       withoutZero: localStorage.getItem('withoutZero') === 'true', // 去除日期补零
       withoutYear: localStorage.getItem('withoutYear') === 'true', // 是否省略年份展示
       remainDayTips: '', // 剩余工期提示
@@ -114,7 +117,6 @@ window.schedulingItem = {
       .p-input-container {
     position: relative;
     display: flex;
-    margin-top: 10px;
     height: calc(100% - 60px);
   }
   .p-input-container .textarea-box, .result-box {
@@ -261,8 +263,6 @@ window.schedulingItem = {
       // 兼容时间格式分隔符，统一转化为 横杠区分
       this.holidays = JSON.parse(JSON.stringify(this.holidays).replace(/[./\-]/g, '-'))
       this.workdays = JSON.parse(JSON.stringify(this.workdays).replace(/[./\-]/g, '-'))
-      // console.log('this.holidays', this.holidays)
-      // console.log('this.workdays', this.workdays)
     },
 
     // 计算日历时间
@@ -332,12 +332,42 @@ window.schedulingItem = {
         }
       }).join('\n')
 
+
+      this.setFinishDate(projectStartDate, validDays - remainDays, splitKey)
+
       // 如果输入了期望结束时间，则添加可用工时字段
       this.remainDayTips = ''
       if (projectEndDate) {
-        this.remainDayTips = `总可用工时：${validDays}；已使用工时：${validDays - remainDays}（${((validDays - remainDays)/validDays).toFixed(2)}）；剩余可用工时：${remainDays}`
+        this.remainDayTips = `总可用工时：${validDays}；已使用工时：${validDays - remainDays}（${((validDays - remainDays) / validDays).toFixed(2)}）；剩余可用工时：${remainDays}`
+      } else {
+        this.remainDayTips = `已使用工时：${validDays - remainDays}（${((validDays - remainDays) / validDays).toFixed(2)}）；剩余可用工时：${remainDays}`
       }
       return resultStr
+    },
+
+    // 计算多线运行时，各线的完成时间
+    setFinishDate(projectStartDate, allNeedDate, splitKey) {
+      // 计算各条线需要的工时
+      this.finishDate.forEach((item, index) => {
+        this.needDate[index] = Math.ceil(allNeedDate / (index + 1))
+      })
+
+      let needDateRemain = [...this.needDate]
+      let indexDate = new Date(projectStartDate)
+      for (let i = 0; i < allNeedDate; i++) {
+        // 跳过周六日，及法定假期
+        if (this.isHoliday(indexDate)) {
+          i--
+        } else {
+          needDateRemain.forEach((item, index) => {
+            needDateRemain[index] -= 1
+            if (needDateRemain[index] === 0) {
+              this.finishDate[index] = `${this.formatTime(indexDate, this.withoutYear ? `MM${splitKey}DD` : `YYYY${splitKey}MM${splitKey}DD`, this.withoutZero)}(${this.needDate[index]})`
+            }
+          })
+        }
+        indexDate.setDate(indexDate.getDate() + 1)
+      }
     },
 
     // 拷贝结果

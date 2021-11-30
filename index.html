@@ -65,6 +65,13 @@
     right: 56px;
     text-align: right;
   }
+  .action p {
+    position: absolute;
+    bottom: -30px;
+    right: 0;
+    font-size: 16px;
+    text-align: right;
+  }
   .action i {
     display: inline-block;
     padding: 8px 16px;
@@ -87,7 +94,7 @@
   .scheduling-item {
     width: 100%;
     height: 700px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     text-align: left;
     outline: none;
   }
@@ -122,7 +129,7 @@
 
   <!--使用说明-->
   <div class="intro">
-    <p>分享链接：{{saveLink}}</p>
+    <p>分享链接：{{ saveLink }}</p>
     <p>* 自动剔除法定节假日的排期工具，解决人为排日期的问题</p>
     <p>* 【选填】#自定义假期：2021.12.23, 2021-12-24， 2021/12/28（设置除法定节假日外的假期时间，将自动剔除该天的排期，以逗号或空格区分）</p>
     <p>* 【选填】#自定义上班时间：2021.12.23（将自动增加该天为上班时间，以逗号或空格区分）</p>
@@ -133,6 +140,7 @@
 
   <!--右侧操作-->
   <div class="action">
+    <p>更新时间：{{ updateTime ? updateTime : '尚未线上保存'}}</p>
     <i @click="saveData(true)">生成副本</i>
     <i @click="saveData(false)">生成分享链接/保存</i>
   </div>
@@ -178,6 +186,7 @@ new Vue({
   data() {
     return {
       id: id,
+      updateTime: '', // 更新时间
       saveLink: '', // 分享用的链接
       schedulingList: [], // 排期列表数
     }
@@ -189,6 +198,23 @@ new Vue({
   },
 
   methods: {
+
+    // 格式化时间
+    formatTime(date, formatStr, withoutZero) {
+      const formatType = {
+        Y: date.getFullYear(),
+        M: date.getMonth() + 1,
+        D: date.getDate(),
+        h: date.getHours(),
+        m: date.getMinutes(),
+        s: date.getSeconds(),
+      }
+      return formatStr.replace(
+        /Y+|M+|D+|h+|m+|s+/g,
+        target => ((withoutZero ? '' : new Array(target.length).join('0')) + formatType[target[0]]).substr(-target.length)
+      )
+    },
+
     initLocalData() {
       // 根据本地缓存，恢复数据
       if (localStorage.getItem('auto-scheduling')) {
@@ -221,6 +247,7 @@ new Vue({
           this.saveLink = `${location.href.split('?')[0]}?id=${this.id}`
           let query = new AV.Query('scheduling');
           query.get(this.id).then((detailData) => {
+            this.updateTime = this.formatTime(new Date(detailData.updatedAt), 'YYYY/MM/DD hh:mm:ss')
             JSON.parse(detailData.attributes.sourceStrList).forEach(item =>
               this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
           }).catch(function(error) {
@@ -256,6 +283,7 @@ new Vue({
           window.open(`${location.href.split('?')[0]}?id=${res.id}`)
         } else {
           this.saveLink = `${location.href.split('?')[0]}?id=${res.id}`
+          this.updateTime = this.formatTime(new Date(res.updatedAt), 'YYYY/MM/DD hh:mm:ss')
 
           let $input = document.createElement('textarea')
           $input.style.opacity = '0'
