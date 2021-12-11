@@ -18,7 +18,12 @@
   }
   #app {
     text-align: center;
-    padding: 10px 50px 0;
+    height: 100vh;
+    padding: 10px 50px 30px;
+    overflow: scroll;
+  }
+  #app::-webkit-scrollbar {
+    width: 0;
   }
   .p-action {
     margin: 20px auto;
@@ -31,7 +36,7 @@
   }
   .bottom-tool {
     position: fixed;
-    right: 50px;
+    right: 56px;
     bottom: 20px;
     z-index: 999;
   }
@@ -51,8 +56,18 @@
   .bottom-tool-item:hover {
     opacity: 0.9;
   }
+  .bottom-tool-left {
+    left: 56px;
+    right: unset;
+  }
+  .bottom-tool-left .bottom-tool-item {
+    margin: 0 2px;
+    border: 1px solid #aaaaaa;
+    color: white;
+    background-color: #3D8AC7;
+    background-image: unset;
+  }
   .intro {
-    padding-left: 20px;
     text-align: left;
   }
   .intro p {
@@ -60,9 +75,9 @@
     color: #666666;
   }
   .action {
-    position: absolute;
-    top: 100px;
-    right: 56px;
+    position: relative;
+    top: -100px;
+    margin-bottom: -20px;
     text-align: right;
   }
   .action p {
@@ -87,11 +102,8 @@
   .action i:hover, .active {
     opacity: 1;
   }
-  .p-container {
-    position: relative;
-    padding-top: 6px;
-  }
   .scheduling-item {
+    margin-top: 10px;
     width: 100%;
     height: 700px;
     margin-bottom: 40px;
@@ -120,11 +132,18 @@
 
   <!--顶部操作提示-->
   <section class="p-action g-box">跳过节假日的排期工具，左计划，右结果</section>
+
+  <!--右下角外链工具栏-->
   <div class="bottom-tool">
     <a class="bottom-tool-item" target="_blank" href="https://github.com/Momo707577045/auto-scheduling">github</a>
     <a class="bottom-tool-item" target="_blank" href="./2021.html">2021 年历</a>
     <a class="bottom-tool-item" target="_blank" href="./2022.html">2022 年历</a>
     <a class="bottom-tool-item" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
+  </div>
+
+  <!--左下角快速定位栏-->
+  <div class="bottom-tool bottom-tool-left">
+    <div v-for="(item, index) in schedulingList" class="bottom-tool-item" @click="scrollTo(index)">排期{{ index + 1 }}</div>
   </div>
 
   <!--使用说明-->
@@ -146,17 +165,15 @@
   </div>
 
   <!--文件载入-->
-  <section class="p-container">
-    <scheduling-item
-      v-for="(item, index) in schedulingList"
-      class="scheduling-item"
-      ref="$schedulingList"
-      :key="item.key"
-      :origin-value="item.originValue"
-      @add-item="addItem(index)"
-      @delete-item="deleteItem(index)"
-    />
-  </section>
+  <scheduling-item
+    v-for="(item, index) in schedulingList"
+    class="scheduling-item"
+    ref="$schedulingList"
+    :key="item.key"
+    :origin-value="item.originValue"
+    @add-item="addItem(index)"
+    @delete-item="deleteItem(index)"
+  />
 </section>
 </body>
 <script>
@@ -193,8 +210,8 @@ new Vue({
   },
 
   mounted() {
-    this.initLocalData()
     this.initAV()
+    !this.id && this.initLocalData() // 如果有 id，则不需要保存在本地
   },
 
   methods: {
@@ -300,7 +317,13 @@ new Vue({
       }, function(error) {
         alert(JSON.stringify(error));
       });
+    },
+
+    // 滚动到特定排期
+    scrollTo(index) {
+      this.$refs.$schedulingList[index].$el.scrollIntoView({ behavior: "auto", block: "start" });
     }
+
   },
 })
 </script>
