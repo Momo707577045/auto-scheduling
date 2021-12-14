@@ -67,6 +67,11 @@
     background-color: #3D8AC7;
     background-image: unset;
   }
+  .top-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .intro {
     text-align: left;
   }
@@ -76,13 +81,12 @@
   }
   .action {
     position: relative;
-    top: -100px;
-    margin-bottom: -20px;
     text-align: right;
+    padding-bottom: 10px;
   }
   .action p {
     position: absolute;
-    bottom: -30px;
+    bottom: -20px;
     right: 0;
     font-size: 16px;
     text-align: right;
@@ -133,6 +137,29 @@
   <!--顶部操作提示-->
   <input class="p-action g-box" type="text" v-model="projectName" placeholder="请输入项目名">
 
+  <!--顶部工具-->
+  <div class="top-container">
+    <!--使用说明-->
+    <div class="intro">
+      <p>分享链接：{{ saveLink }}</p>
+      <p>* 自动剔除法定节假日的排期工具，解决人为排日期的问题</p>
+      <p>* 【选填】#项目名：XXXX 项目（用于标识项目 tab，进行快速跳转）</p>
+      <p>* 【选填】#自定义假期：2021.12.23, 2021-12-24， 2021/12/28（设置除法定节假日外的假期时间，将自动剔除该天的排期，以逗号或空格区分）</p>
+      <p>* 【选填】#自定义上班时间：2021.12.23（将自动增加该天为上班时间，以逗号或空格区分）</p>
+      <p>* 【必填】#起始时间：2021.12.23（必填，用于计算排期时间）</p>
+      <p>* 【选填】#结束时间：2022.1.25（用于动态提醒，剩余可用时间）</p>
+      <p>* 【必填】#用时：7 天（设置项目用时，如开发#用时：7 天）</p>
+    </div>
+
+    <!--右侧操作-->
+    <div class="action">
+      <p>更新时间：{{ updateTime ? updateTime : '尚未线上保存'}}</p>
+      <i @click="resetData">重置</i>
+      <i @click="saveData(true)">生成副本</i>
+      <i @click="saveData(false)">生成分享链接/保存</i>
+    </div>
+  </div>
+
   <!--右下角外链工具栏-->
   <div class="bottom-tool">
     <a class="bottom-tool-item" target="_blank" href="https://github.com/Momo707577045/auto-scheduling">github</a>
@@ -144,25 +171,6 @@
   <!--左下角快速定位栏-->
   <div class="bottom-tool bottom-tool-left">
     <div v-for="(item, index) in schedulingNameList" class="bottom-tool-item" @click="scrollTo(index)">{{ item || `排期${index + 1}` }}</div>
-  </div>
-
-  <!--使用说明-->
-  <div class="intro">
-    <p>分享链接：{{ saveLink }}</p>
-    <p>* 自动剔除法定节假日的排期工具，解决人为排日期的问题</p>
-    <p>* 【选填】#自定义假期：2021.12.23, 2021-12-24， 2021/12/28（设置除法定节假日外的假期时间，将自动剔除该天的排期，以逗号或空格区分）</p>
-    <p>* 【选填】#自定义上班时间：2021.12.23（将自动增加该天为上班时间，以逗号或空格区分）</p>
-    <p>* 【必填】#起始时间：2021.12.23（必填，用于计算排期时间）</p>
-    <p>* 【选填】#结束时间：2022.1.25（用于动态提醒，剩余可用时间）</p>
-    <p>* 【必填】#用时：7 天（设置项目用时，如开发#用时：7 天）</p>
-  </div>
-
-  <!--右侧操作-->
-  <div class="action">
-    <p>更新时间：{{ updateTime ? updateTime : '尚未线上保存'}}</p>
-    <i @click="resetData">重置</i>
-    <i @click="saveData(true)">生成副本</i>
-    <i @click="saveData(false)">生成分享链接/保存</i>
   </div>
 
   <!--文件载入-->
@@ -177,6 +185,7 @@
     @add-item="addItem(index)"
     @delete-item="deleteItem(index)"
   />
+
 </section>
 </body>
 <script>

@@ -271,8 +271,8 @@ window.schedulingItem = {
       this.addCustomHolidayAndWorkday(originStr)
 
       // 校验是否输入了「项目名称」
-      if (originStr.match(/#项目名：(\w+)/)) {
-        this.$emit('update-name', originStr.match(/#项目名：(\w+)/)[1])
+      if (originStr.match(/#项目名：(\S+)/)) {
+        this.$emit('update-name', originStr.match(/#项目名：(\S+)/)[1])
       } else {
         this.$emit('update-name', '')
       }
