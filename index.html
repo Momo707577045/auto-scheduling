@@ -131,7 +131,7 @@
 <section id="app" v-cloak="">
 
   <!--顶部操作提示-->
-  <section class="p-action g-box">跳过节假日的排期工具，左计划，右结果</section>
+  <input class="p-action g-box" type="text" v-model="projectName" placeholder="请输入项目名">
 
   <!--右下角外链工具栏-->
   <div class="bottom-tool">
@@ -143,7 +143,7 @@
 
   <!--左下角快速定位栏-->
   <div class="bottom-tool bottom-tool-left">
-    <div v-for="(item, index) in schedulingList" class="bottom-tool-item" @click="scrollTo(index)">排期{{ index + 1 }}</div>
+    <div v-for="(item, index) in schedulingNameList" class="bottom-tool-item" @click="scrollTo(index)">{{ item || `排期${index + 1}` }}</div>
   </div>
 
   <!--使用说明-->
@@ -160,6 +160,7 @@
   <!--右侧操作-->
   <div class="action">
     <p>更新时间：{{ updateTime ? updateTime : '尚未线上保存'}}</p>
+    <i @click="resetData">重置</i>
     <i @click="saveData(true)">生成副本</i>
     <i @click="saveData(false)">生成分享链接/保存</i>
   </div>
@@ -171,6 +172,8 @@
     ref="$schedulingList"
     :key="item.key"
     :origin-value="item.originValue"
+    :origin-name="item.originName"
+    @update-name="updateItemName($event, index)"
     @add-item="addItem(index)"
     @delete-item="deleteItem(index)"
   />
@@ -203,9 +206,11 @@ new Vue({
   data() {
     return {
       id: id,
+      projectName: '跳过节假日的排期工具，左计划，右结果', // 项目名
       updateTime: '', // 更新时间
       saveLink: '', // 分享用的链接
       schedulingList: [], // 排期列表数
+      schedulingNameList: [], // 排期名
     }
   },
 
@@ -235,10 +240,18 @@ new Vue({
     initLocalData() {
       // 根据本地缓存，恢复数据
       if (localStorage.getItem('auto-scheduling')) {
+        this.projectName = localStorage.getItem('auto-scheduling-project-name') || '跳过节假日的排期工具，左计划，右结果'
         let sourceStrList = JSON.parse(localStorage.getItem('auto-scheduling'))
-        sourceStrList.forEach(item => this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
+        sourceStrList.forEach((item, index) => {
+          this.schedulingNameList.push('')
+          this.schedulingList.push({
+            originValue: item,
+            key: new Date().getTime() - Math.floor(Math.random() * 100000)
+          })
+        })
       } else {
-        this.schedulingList.push({ originValue: '', key: new Date().getTime() })
+        this.schedulingNameList.push('')
+        this.schedulingList.push({ originValue: '', originName: '', key: new Date().getTime() })
       }
 
       // 每秒同步一次数据
@@ -247,6 +260,7 @@ new Vue({
           let sourceStrList = []
           this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
           localStorage.setItem('auto-scheduling', JSON.stringify(sourceStrList))
+          localStorage.setItem('auto-scheduling-project-name', this.projectName)
         }
       }, 400)
     },
@@ -265,6 +279,7 @@ new Vue({
           let query = new AV.Query('scheduling');
           query.get(this.id).then((detailData) => {
             this.updateTime = this.formatTime(new Date(detailData.updatedAt), 'YYYY/MM/DD hh:mm:ss')
+            this.projectName = detailData.attributes.projectName || '跳过节假日的排期工具，左计划，右结果'
             JSON.parse(detailData.attributes.sourceStrList).forEach(item =>
               this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
           }).catch(function(error) {
@@ -278,12 +293,14 @@ new Vue({
     addItem(preIndex) {
       let item = { originValue: '', ref: null, key: new Date().getTime() }
       this.schedulingList.splice(preIndex + 1, 0, item)
+      this.schedulingNameList.splice(preIndex + 1, 0, '')
     },
 
     // 删除特定项目
     deleteItem(index) {
-      if (confirm("确定要删除吗？")) {
-        this.schedulingList.length > 1 && this.schedulingList.splice(index, 1)
+      if (this.schedulingList.length > 1 && confirm("确定要删除吗？")) {
+        this.schedulingList.splice(index, 1)
+        this.schedulingNameList.splice(index, 1)
       }
     },
 
@@ -294,6 +311,7 @@ new Vue({
       const schedulingClass = AV.Object.extend('scheduling')
       let scheduling = new schedulingClass()
       this.id && !createCopy && scheduling.set('id', this.id) // 如果数据存在，却不是创建副本，则更新
+      scheduling.set('projectName', this.projectName.trim() ? this.projectName : '跳过节假日的排期工具，左计划，右结果')
       scheduling.set('sourceStrList', JSON.stringify(sourceStrList))
       scheduling.save().then((res) => {
         if (createCopy) {
@@ -317,6 +335,21 @@ new Vue({
       }, function(error) {
         alert(JSON.stringify(error));
       });
+    },
+
+    // 重置数据
+    resetData() {
+      if (confirm("确定要删除吗？")) {
+        this.schedulingList = []
+        this.schedulingList.push({ originValue: '', key: new Date().getTime() })
+        this.schedulingNameList = ['']
+      }
+    },
+
+    // 更新项目名
+    updateItemName(name, index) {
+      this.schedulingNameList[index] = name
+      this.schedulingNameList = JSON.parse(JSON.stringify(this.schedulingNameList))
     },
 
     // 滚动到特定排期

@@ -270,6 +270,13 @@ window.schedulingItem = {
       // 添加自定义假期和工作日
       this.addCustomHolidayAndWorkday(originStr)
 
+      // 校验是否输入了「项目名称」
+      if (originStr.match(/#项目名：(\w+)/)) {
+        this.$emit('update-name', originStr.match(/#项目名：(\w+)/)[1])
+      } else {
+        this.$emit('update-name', '')
+      }
+
       // 校验是否输入了「项目开始时间」
       if (!originStr.match(/#起始时间：(\d+[./\-]\d+[./\-]\d+)/)) {
         return '请输入项目起始时间，示例如：xxx #起始时间：2021.12.23'
@@ -373,8 +380,6 @@ window.schedulingItem = {
     // 拷贝结果
     copy() {
       clearTimeout(this.timeouter)
-      this.tips = `复制成功`
-      this.timeouter = setTimeout(() => {this.tips = `跳过节假日的排期工具，左计划，右结果`}, 1000)
       if (!document.queryCommandSupported('copy')) {
         return false
       }
@@ -388,6 +393,8 @@ window.schedulingItem = {
       document.execCommand('copy')
       document.body.removeChild($input)
       $input = null
+
+      alert('复制成功')
     }
   },
 }
