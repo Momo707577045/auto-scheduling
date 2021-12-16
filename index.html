@@ -223,6 +223,12 @@ new Vue({
     }
   },
 
+  watch: {
+    projectName(newValue) {
+      document.title = newValue
+    }
+  },
+
   mounted() {
     this.initAV()
     !this.id && this.initLocalData() // 如果有 id，则不需要保存在本地
@@ -364,7 +370,7 @@ new Vue({
     // 滚动到特定排期
     scrollTo(index) {
       this.$refs.$schedulingList[index].$el.scrollIntoView({ behavior: "auto", block: "start" });
-    }
+    },
 
   },
 })

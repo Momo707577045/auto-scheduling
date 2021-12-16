@@ -270,13 +270,6 @@ window.schedulingItem = {
       // 添加自定义假期和工作日
       this.addCustomHolidayAndWorkday(originStr)
 
-      // 校验是否输入了「项目名称」
-      if (originStr.match(/#项目名：(\S+)/)) {
-        this.$emit('update-name', originStr.match(/#项目名：(\S+)/)[1])
-      } else {
-        this.$emit('update-name', '')
-      }
-
       // 校验是否输入了「项目开始时间」
       if (!originStr.match(/#起始时间：(\d+[./\-]\d+[./\-]\d+)/)) {
         return '请输入项目起始时间，示例如：xxx #起始时间：2021.12.23'
@@ -339,8 +332,14 @@ window.schedulingItem = {
         }
       }).join('\n')
 
-
       this.setFinishDate(projectStartDate, validDays - remainDays, splitKey)
+
+      // 校验是否输入了「项目名称」
+      if (originStr.match(/#项目名：(\S+)/)) {
+        this.$emit('update-name', originStr.match(/#项目名：(\S+)/)[1] + '：' + this.finishDate[0])
+      } else {
+        this.$emit('update-name', '' + this.finishDate[0])
+      }
 
       // 如果输入了期望结束时间，则添加可用工时字段
       this.remainDayTips = ''
