@@ -156,7 +156,7 @@
       <p>更新时间：{{ updateTime ? updateTime : '尚未线上保存'}}</p>
       <i @click="resetData">重置</i>
       <i @click="saveData(true)">生成副本</i>
-      <i @click="saveData(false)">生成分享链接/保存</i>
+      <i v-if="!readOnly" @click="saveData(false)">生成分享链接/保存</i>
     </div>
   </div>
 
@@ -173,11 +173,13 @@
     <div v-for="(item, index) in schedulingNameList" class="bottom-tool-item" @click="scrollTo(index)">{{ item || `排期${index + 1}` }}</div>
   </div>
 
+
+
   <!--文件载入-->
   <scheduling-item
     v-for="(item, index) in schedulingList"
     class="scheduling-item"
-    ref="$schedulingList"
+    :ref="`$schedulingItem${index}`"
     :key="item.key"
     :origin-value="item.originValue"
     :origin-name="item.originName"
@@ -205,6 +207,7 @@ var _hmt = _hmt || [];
 <script>
 let urlObj = new URL(location.href)
 let id = urlObj.searchParams.get('id')
+let readOnly = urlObj.searchParams.get('8bdcf888087e4a0d')
 
 new Vue({
   el: '#app',
@@ -215,6 +218,7 @@ new Vue({
   data() {
     return {
       id: id,
+      readOnly: readOnly, // 只读
       projectName: '跳过节假日的排期工具，左计划，右结果', // 项目名
       updateTime: '', // 更新时间
       saveLink: '', // 分享用的链接
@@ -320,18 +324,19 @@ new Vue({
     },
 
     // 将数据保存到远端
-    saveData(createCopy) {
+    saveData(createBackup) {
       let sourceStrList = []
       this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
       const schedulingClass = AV.Object.extend('scheduling')
       let scheduling = new schedulingClass()
-      this.id && !createCopy && scheduling.set('id', this.id) // 如果数据存在，却不是创建副本，则更新
+      this.id && !createBackup && scheduling.set('id', this.id) // 如果数据存在，却不是创建副本，则更新
       scheduling.set('projectName', this.projectName.trim() ? this.projectName : '跳过节假日的排期工具，左计划，右结果')
       scheduling.set('sourceStrList', JSON.stringify(sourceStrList))
       scheduling.save().then((res) => {
-        if (createCopy) {
+        if (createBackup) {
           window.open(`${location.href.split('?')[0]}?id=${res.id}`)
         } else {
+          this.id = res.id
           this.saveLink = `${location.href.split('?')[0]}?id=${res.id}`
           this.updateTime = this.formatTime(new Date(res.updatedAt), 'YYYY/MM/DD hh:mm:ss')
 
@@ -346,6 +351,7 @@ new Vue({
           $input = null
           window.history.replaceState(null, '', this.saveLink)
         }
+
         alert(`保存成功，信息ID为：${res.id}，分享链接已复制`)
       }, function(error) {
         alert(JSON.stringify(error));
@@ -369,7 +375,9 @@ new Vue({
 
     // 滚动到特定排期
     scrollTo(index) {
-      this.$refs.$schedulingList[index].$el.scrollIntoView({ behavior: "auto", block: "start" });
+      console.log(this.$refs, index)
+      // this.$refs.$schedulingList[index].$el.scrollIntoView({ behavior: "auto", block: "start" });
+      this.$refs[`$schedulingItem${index}`][0].$el.scrollIntoView({ behavior: "auto", block: "start" });
     },
 
   },
