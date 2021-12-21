@@ -34,11 +34,14 @@
     font-weight: bold;
     white-space: pre-line;
   }
-  .bottom-tool {
+  .bottom {
     position: fixed;
-    right: 56px;
+    left: 54px;
     bottom: 20px;
+    width: calc(100% - 112px);
     z-index: 999;
+    display: flex;
+    justify-content: space-between;
   }
   .bottom-tool-item {
     display: inline-block;
@@ -160,20 +163,20 @@
     </div>
   </div>
 
-  <!--右下角外链工具栏-->
-  <div class="bottom-tool">
-    <a class="bottom-tool-item" target="_blank" href="https://github.com/Momo707577045/auto-scheduling">github</a>
-    <a class="bottom-tool-item" target="_blank" href="./2021.html">2021 年历</a>
-    <a class="bottom-tool-item" target="_blank" href="./2022.html">2022 年历</a>
-    <a class="bottom-tool-item" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
+  <div class="bottom">
+    <!--左下角快速定位栏-->
+    <div class="bottom-tool bottom-tool-left">
+      <div v-for="(item, index) in schedulingNameList" class="bottom-tool-item" @click="scrollTo(index)">{{ item || `排期${index + 1}` }}</div>
+    </div>
+
+    <!--右下角外链工具栏-->
+    <div class="bottom-tool">
+      <a class="bottom-tool-item" target="_blank" href="https://github.com/Momo707577045/auto-scheduling">github</a>
+      <a class="bottom-tool-item" target="_blank" href="./2021.html">2021 年历</a>
+      <a class="bottom-tool-item" target="_blank" href="./2022.html">2022 年历</a>
+      <a class="bottom-tool-item" target="_blank" href="http://blog.luckly-mjw.cn/tool-show/index.html">其他实用工具</a>
+    </div>
   </div>
-
-  <!--左下角快速定位栏-->
-  <div class="bottom-tool bottom-tool-left">
-    <div v-for="(item, index) in schedulingNameList" class="bottom-tool-item" @click="scrollTo(index)">{{ item || `排期${index + 1}` }}</div>
-  </div>
-
-
 
   <!--文件载入-->
   <scheduling-item
@@ -220,6 +223,7 @@ new Vue({
       id: id,
       readOnly: readOnly, // 只读
       projectName: '跳过节假日的排期工具，左计划，右结果', // 项目名
+      password: '', // 文档密码
       updateTime: '', // 更新时间
       saveLink: '', // 分享用的链接
       schedulingList: [], // 排期列表数
@@ -299,6 +303,7 @@ new Vue({
           query.get(this.id).then((detailData) => {
             this.updateTime = this.formatTime(new Date(detailData.updatedAt), 'YYYY/MM/DD hh:mm:ss')
             this.projectName = detailData.attributes.projectName || '跳过节假日的排期工具，左计划，右结果'
+            this.password = detailData.attributes.password
             JSON.parse(detailData.attributes.sourceStrList).forEach(item =>
               this.schedulingList.push({ originValue: item, key: new Date().getTime() - Math.floor(Math.random() * 100000) }))
           }).catch(function(error) {
@@ -326,10 +331,21 @@ new Vue({
     // 将数据保存到远端
     saveData(createBackup) {
       let sourceStrList = []
-      this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
+      Object.keys(this.$refs).forEach($domList => sourceStrList.push($domList[0].sourceStr))
       const schedulingClass = AV.Object.extend('scheduling')
       let scheduling = new schedulingClass()
       this.id && !createBackup && scheduling.set('id', this.id) // 如果数据存在，却不是创建副本，则更新
+
+      if (!createBackup) { // 创建或保存
+        let password = window.prompt('请输入文档密码（默认不设置）')
+        scheduling.set('password', password.trim())
+        if (this.password && this.password !== password) { // 设置了密码，但对不上信息
+          alert('密码不正确，保存失败')
+          return
+        }
+        this.password = password
+      }
+
       scheduling.set('projectName', this.projectName.trim() ? this.projectName : '跳过节假日的排期工具，左计划，右结果')
       scheduling.set('sourceStrList', JSON.stringify(sourceStrList))
       scheduling.save().then((res) => {
@@ -375,8 +391,6 @@ new Vue({
 
     // 滚动到特定排期
     scrollTo(index) {
-      console.log(this.$refs, index)
-      // this.$refs.$schedulingList[index].$el.scrollIntoView({ behavior: "auto", block: "start" });
       this.$refs[`$schedulingItem${index}`][0].$el.scrollIntoView({ behavior: "auto", block: "start" });
     },
 
