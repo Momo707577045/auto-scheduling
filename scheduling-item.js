@@ -75,7 +75,8 @@ window.schedulingItem = {
       withoutYear: localStorage.getItem('withoutYear') === 'true', // 是否省略年份展示
       remainDayTips: '', // 剩余工期提示
       sourceStr: this.originValue || '', // 源码字符串
-      testStr: `排期#起始时间：2021.12.23
+      testStr: `#项目名：第1组
+排期#起始时间：${this.formatTime(new Date(), 'YYYY.MM.DD')}
 排期#结束时间：2022.1.25
 
 #自定义假期：2021.12.23,   2021.12.24， 2021.12.28

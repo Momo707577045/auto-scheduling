@@ -279,9 +279,9 @@ new Vue({
 
       // 每秒同步一次数据
       setInterval(() => {
-        if (this.$refs.$schedulingList) {
+        if (Object.values(this.$refs)) {
           let sourceStrList = []
-          this.$refs.$schedulingList.forEach(item => sourceStrList.push(item.sourceStr))
+          Object.values(this.$refs).forEach($domList => $domList[0] && sourceStrList.push($domList[0].sourceStr))
           localStorage.setItem('auto-scheduling', JSON.stringify(sourceStrList))
           localStorage.setItem('auto-scheduling-project-name', this.projectName)
         }
@@ -331,7 +331,7 @@ new Vue({
     // 将数据保存到远端
     saveData(createBackup) {
       let sourceStrList = []
-      Object.values(this.$refs).forEach($domList => sourceStrList.push($domList[0].sourceStr))
+      Object.values(this.$refs).forEach($domList => $domList[0] && sourceStrList.push($domList[0].sourceStr))
       const schedulingClass = AV.Object.extend('scheduling')
       let scheduling = new schedulingClass()
       this.id && !createBackup && scheduling.set('id', this.id) // 如果数据存在，却不是创建副本，则更新
