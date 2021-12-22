@@ -331,19 +331,24 @@ new Vue({
     // 将数据保存到远端
     saveData(createBackup) {
       let sourceStrList = []
-      Object.keys(this.$refs).forEach($domList => sourceStrList.push($domList[0].sourceStr))
+      Object.values(this.$refs).forEach($domList => sourceStrList.push($domList[0].sourceStr))
       const schedulingClass = AV.Object.extend('scheduling')
       let scheduling = new schedulingClass()
       this.id && !createBackup && scheduling.set('id', this.id) // 如果数据存在，却不是创建副本，则更新
 
-      if (!createBackup) { // 创建或保存
-        let password = window.prompt('请输入文档密码（默认不设置）')
-        scheduling.set('password', password.trim())
-        if (this.password && this.password !== password) { // 设置了密码，但对不上信息
-          alert('密码不正确，保存失败')
-          return
+      if (!createBackup) { // 非备份，即创建或新增
+        if (
+          !this.password || // 没有设置过密码，需要输入密码
+          localStorage.getItem(`auto-scheduling-${this.id}`) !== this.password // 本地保存的密码与线上保存的密码不一致时，需要输入密码
+        ) { // 创建或保存
+          let password = window.prompt('请输入文档密码（默认不设置）')
+          scheduling.set('password', password.trim())
+          if (this.password && this.password !== password) { // 设置了密码，但对不上信息
+            alert('密码不正确，保存失败')
+            return
+          }
+          this.password = password
         }
-        this.password = password
       }
 
       scheduling.set('projectName', this.projectName.trim() ? this.projectName : '跳过节假日的排期工具，左计划，右结果')
@@ -355,6 +360,9 @@ new Vue({
           this.id = res.id
           this.saveLink = `${location.href.split('?')[0]}?id=${res.id}`
           this.updateTime = this.formatTime(new Date(res.updatedAt), 'YYYY/MM/DD hh:mm:ss')
+
+          // 本地存储密码，避免每次都输入
+          localStorage.setItem(`auto-scheduling-${this.id}`, this.password)
 
           let $input = document.createElement('textarea')
           $input.style.opacity = '0'

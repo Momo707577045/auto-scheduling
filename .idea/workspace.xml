@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dd9d763f-1130-44d6-9ca9-a0a607d117ab" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
@@ -18,30 +19,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="todo-bihu.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../../../../intruction/todo-bihu.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="223">
-                <caret line="1368" column="28" lean-forward="true" selection-start-line="1368" selection-start-column="28" selection-end-line="1368" selection-end-column="28" />
-              </first_editor>
-              <second_editor>
-                <markdownNavigatorState />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="temp2.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../../../../intruction/temp2.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="315">
-                <caret line="1008" selection-start-line="1008" selection-end-line="1008" />
-              </first_editor>
-              <second_editor>
-                <markdownNavigatorState />
-              </second_editor>
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="494">
+              <caret line="324" column="62" lean-forward="true" selection-start-line="324" selection-start-column="44" selection-end-line="324" selection-end-column="62" />
             </state>
           </provider>
         </entry>
@@ -50,8 +32,8 @@
         <entry file="file://$PROJECT_DIR$/todo.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="114">
-                <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+              <first_editor relative-caret-position="-1223">
+                <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
               </first_editor>
               <second_editor>
                 <markdownNavigatorState />
@@ -60,11 +42,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/index.html">
+      <file leaf-file-name="list.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/list.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="318">
-              <caret line="346" column="32" lean-forward="true" selection-start-line="346" selection-start-column="32" selection-end-line="346" selection-end-column="32" />
+            <state relative-caret-position="511">
+              <caret line="327" column="86" lean-forward="true" selection-start-line="327" selection-start-column="86" selection-end-line="327" selection-end-column="86" />
+              <folding>
+                <element signature="n#style#0;n#th#4;n#tr#0;n#thead#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -73,15 +58,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>2021</find>
-      <find>bug</find>
-      <find>originValue</find>
-      <find>p-action</find>
-      <find>id</find>
-      <find>东莞</find>
-      <find>beforeunload</find>
-      <find>remainDayTips</find>
-      <find>完成时间</find>
       <find>getValidDays</find>
       <find>finishTime</find>
       <find>needTime</find>
@@ -103,6 +79,15 @@
       <find>saveData</find>
       <find>createCopy</find>
       <find>password</find>
+      <find>forEach</find>
+      <find>localStorage</find>
+      <find>logIn</find>
+      <find>query</find>
+      <find>searchUrl</find>
+      <find>bug</find>
+      <find>pageURL</find>
+      <find>dataConf</find>
+      <find>getList</find>
     </findStrings>
     <replaceStrings>
       <replace>createItem</replace>
@@ -112,10 +97,11 @@
       <replace>this.workdays</replace>
       <replace>originValue</replace>
       <replace>2022</replace>
-      <replace>scheduling</replace>
       <replace>finishDate</replace>
       <replace>needDate</replace>
       <replace>createBackup</replace>
+      <replace>scheduling</replace>
+      <replace>projectName</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -135,8 +121,9 @@
         <option value="$PROJECT_DIR$/scheduling-item.js" />
         <option value="$PROJECT_DIR$/../../../../../intruction/temp2.md" />
         <option value="$PROJECT_DIR$/../../../../../intruction/todo-bihu.md" />
-        <option value="$PROJECT_DIR$/todo.md" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/todo.md" />
+        <option value="$PROJECT_DIR$/list.html" />
       </list>
     </option>
   </component>
@@ -220,7 +207,7 @@
     <layout>
       <window_info anchor="right" id="PlantUML" order="3" />
       <window_info anchor="right" id="Remote Host" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2003367" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2003367" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
@@ -661,8 +648,8 @@
     <entry file="file://$PROJECT_DIR$/../../../../../intruction/todo-bihu.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="223">
-            <caret line="1368" column="28" lean-forward="true" selection-start-line="1368" selection-start-column="28" selection-end-line="1368" selection-end-column="28" />
+          <first_editor relative-caret-position="280">
+            <caret line="136" lean-forward="true" selection-start-line="136" selection-end-line="136" />
           </first_editor>
           <second_editor>
             <markdownNavigatorState />
@@ -673,8 +660,8 @@
     <entry file="file://$PROJECT_DIR$/todo.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="114">
-            <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+          <first_editor relative-caret-position="-1223">
+            <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
           </first_editor>
           <second_editor>
             <markdownNavigatorState />
@@ -684,8 +671,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="346" column="32" lean-forward="true" selection-start-line="346" selection-start-column="32" selection-end-line="346" selection-end-column="32" />
+        <state relative-caret-position="494">
+          <caret line="324" column="62" lean-forward="true" selection-start-line="324" selection-start-column="44" selection-end-line="324" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="511">
+          <caret line="327" column="86" lean-forward="true" selection-start-line="327" selection-start-column="86" selection-end-line="327" selection-end-column="86" />
+          <folding>
+            <element signature="n#style#0;n#th#4;n#tr#0;n#thead#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
